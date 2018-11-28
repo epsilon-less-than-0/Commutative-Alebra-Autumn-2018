@@ -1,0 +1,3322 @@
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts, dsfont, graphicx,mathtools,tikz,hyperref,physics, stmaryrd}
+\usetikzlibrary{positioning}
+\newcommand{\n}{\mathbb{N}}
+\newcommand{\z}{\mathbb{Z}}
+\newcommand{\q}{\mathbb{Q}}
+\newcommand{\cx}{\mathbb{C}}
+\newcommand{\field}{\mathbb{F}}
+\newcommand{\ita}[1]{\textit{#1}}
+\newcommand{\com}[2]{#1\backslash#2}
+\newcommand{\oneton}{\{1,2,3,...,n\}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\rad}{\textup{rad}}
+\newcommand{\spec}{\textup{Spec}}
+\newcommand{\ho}[2]{\textup{Hom}(#1,#2)}
+\newcommand{\en}[1]{\textup{End}(#1)}
+\newcommand{\ann}[1]{\textup{Ann}(#1)}
+
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\cok}{coker}
+\DeclareMathOperator{\Ass}{Ass}
+\DeclareMathOperator{\Im}{Im}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Jac}{Jac}
+\DeclareMathOperator{\Frac}{Frac}
+\DeclareMathOperator{\trdeg}{tr.deg}
+\DeclareMathOperator{\card}{card}
+\DeclareMathOperator{\Tor}{Tor}
+\newcommand{\bigslant}[2]{{\raisebox{.2em}{$#1$}\left/\raisebox{-.2em}{$#2$}\right.}}
+%\newcommand\idea[1]{\begin{gather*}#1\end{gather*}}
+\newcommand\ef{\ita{f} }
+\newcommand\eff{\ita{f}}
+%\newcommand\proofs[1]{\begin{proof}#1\end{proof}}
+\newcommand\inv[1]{#1^{-1}}
+\newcommand\setb[1]{\{#1\}}
+\newcommand\en{\ita{n }}
+\newcommand{\vbrack}[1]{\langle #1\rangle}
+\newcommand{\limitn}[1]{\lim_{n \to \infty} #1}
+\newcommand{\limitk}[1]{\lim_{k \to \infty} #1}
+\newcommand{\limit}[2]{\lim_{#1 \to \infty} #2}
+\newcommand{\mapping}[5]{\begin{align*}
+#1\colon #2 &\to #3\\
+#4 & \mapsto #5
+\end{align*}}
+\newcommand{\mappinginj}[5]{\begin{align*}
+#1\colon #2 &\hookrightarrow #3\\
+#4 & \mapsto #5
+\end{align*}}
+\newcommand{\mappingsurj}[5]{\begin{align*}
+#1\colon #2 &\twoheadrightarrow #3\\
+#4 & \mapsto #5
+\end{align*}}
+\newcommand{\mapp}[4]{\begin{align*}
+#1 &\to #2\\
+#3 & \mapsto #4
+\end{align*}}
+\newcommand{\mappinj}[4]{\begin{align*}
+#1 & \hookrightarrow #2\\
+#3 & \mapsto #4
+\end{align*}}
+\newcommand{\mappsurj}[4]{\begin{align*}
+#1 & \twoheadrightarrow #2\\
+#3 & \mapsto #4
+\end{align*}}
+
+\def\O{\mathfrak{O}}
+\def\a{\mathfrak{a}}
+\def\b{\mathfrak{b}}
+\def\I{\mathfrak{I}}
+\def\p{\mathfrak{p}}
+\def\r{\mathbb{R}}
+\def\T{\mathcal{T}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem*{idea}{Idea}
+\newtheorem*{claim}{Claim}
+\newtheorem*{reference}{Reference}
+\newtheorem*{eg}{Example}
+\newtheorem*{exercise}{Exercise}
+\newtheorem*{fact}{Fact}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+ 
+\begin{document}
+\date{}
+
+ 
+\title{Commutative Algebra Lecture Notes}
+\author{Kevin Yeh
+D-MATH \\ETH Zurich} 
+ 
+\maketitle
+
+\date{02.10.2018}
+\textbf{Notes prior to this date have not been added. I will probably do it towards the end of the semester when I have more time.}\\
+Recap: From Localization, we talked about localization of a ring, and behaviors of ideals. We stated this last time:
+\begin{corollary}
+\[
+\rad (I) = \bigcap_{I \subset P\text{ prime}} P
+\]
+\end{corollary}
+The canonical homomorphism
+\[
+R\longrightarrow R[\inv{U}]
+\]
+induces a bijection
+\[
+\spec(R[U^{-1}]= \{P \in \spec(R), P\cap U= \emptyset\}
+\]
+\begin{proof}
+Need to check $P\cap U = \emptyset$ is equivalent to ``$P$ is closed under division by $U$", use the definition of a prime ideal to show this. This is also a homework problem. 
+\end{proof}
+Recall:
+\begin{definition}
+the Spectrum of a ring $R$, denoted $\spec(R)$ is the set of all prime ideals of $R$.
+\end{definition}
+TODAY:\\
+\begin{enumerate}
+    \item we will describe the interpretation of prime ideals in the geometric sense. 
+    \item talk about primary decomposition, this will be a decomposition of the Corollary above.
+    \item we will talk about basics of modules
+\end{enumerate}
+On the first point:
+\section*{Interpretation of Primality}
+Recall that to each ideal $I\in k[x_1,\dots,x_n]$ where $k$ algebraically closed, we can talk about its associated variety/zero-locus $V(I)\in k^n$. We saw that this induces a bijection:
+\[
+\{\text{ideals $I\subset k[x_1,\dots, x_n]$ such that $I=I(V(I))$}\} = \{\text{varieties $X\subset k^n$}\}
+\]
+By the Nullstellensatz, we may reinterpret this as
+\[
+\{\text{radical ideals $I\subset k[x_1,\dots,x_n]$}\} \iff R/I\text{ is reduced}
+\]
+Reduced means that the set of nilpotent elements is $\{0\}$.\\
+\begin{remark}
+$P$ is prime implies that $P$ is radical. While $P$ prime $\iff$ $R/P$ is an integral domain, which implies that $R/P$ reduced $\iff$ $P$ radical.
+\end{remark}
+Question: which varieties do the prime ideals correspond to?
+\begin{eg}
+Consider , for $a\in k$
+\[
+I_a \coloneqq (xy-a) \subset k[x,y]
+\]
+We claim that is thing is radical for all $a\in k$.\\
+because it corresponds to the variety:
+\[
+X_a \coloneqq V(I_a) =\{(x,y)\in k^2: xy=a\}
+\]
+On the other hand $I_a$ is prime $\iff$ $a\neq 0$. This can be seen:\\
+if $a=0$, then 
+\[
+k[x,y]/(I_a) = k[x,y]/(xy)
+\]
+and $(xy)$ is not prime since we can have $xy\in (xy)$, but $x,y, \notin (xy)$.\\
+If $a\neq 0$ then $xy-a$ is irreducible, which implies that $(xy-a)$ is prime. Alternatively,
+\begin{align*}
+ k[x,y]/(xy-a) &\hookuparrow k(x)\\
+y & \mapsto a/x
+\end{align*}
+\end{eg}
+\begin{definition}
+Let $X$ be any topological space. Then $X$ is connected if we cannot write it as a disjoint union of two proper closed subsets. 
+\end{definition}
+\begin{definition}
+$X$ a topological space is called irreducible if we cannot write it as a union of any two proper closed subsets.
+\end{definition}
+The latter one is a stronger one than the previous one.
+\begin{prop}
+Let $X=V(I)$, where $I\subset k[x_1,\dots, x_n]$ is radical. Then
+\[
+I\text{ is prime} \iff X\text{ is irreducible}
+\]
+\end{prop}
+Recall the definition of the Zariski Topology:
+\begin{definition}
+The Zariski topology on $k^n$ is given by
+\[
+\{\text{closed sets}\} \coloneqq \{\text{varieties}\}
+\]
+Further, On any subset of $k^n$ we can then define the induced topology.
+\end{definition}
+Going back to the diagram, we can write:
+see hand drawn diagram.\\
+\begin{prop}
+$X$ connected $\iff$ $k[x_1,\dots,x_n]/I$ cannot be written as a direct sum of two $k$-algebra. $I$ here is same setup as the previous Proposition. For detail see A-M Chapter 1 exercises.
+\end{prop}
+PROOF OF PROP 1
+\begin{proof}
+For the forward direction: suppose $I$ is prime. Suppose by contradiction that we can write $X=X_1 \cup X_2$ where the $X_i$ are proper closed subsets. Then we can find $f_1,f_2$ polynomials such that $f_1$ vanishes on $X_1$ but does not vanish on all of $X$; $f_2$ vanishes on $X_2$ but not on all of $X$. But then $f_1f_2$ vanishes on all of $X$, this implies $f_1f_2 \in I$ then by primality of $I$ we have at least one of $f_i\in I$ but this is a contradiction. 
+\end{proof}
+We now know what prime means in terms of geometry. We want to generalize this, so we will have to talk about modules first.
+\section*{Modules}
+I will begin with the definition given in A-M Chapter 2., which I find to be more approachable as a first introduction, and one that allows me to immediately think of examples to put the idea on a solid footing. In class Prof. Nelson gave th second definition first and showed it is equivalent to the first one.\\
+Let $R$ be a ring. 
+\begin{definition}
+An \textup{R-Module} is an additive abelian group $(M,+)$, on which $A$ acts lineary; more precisely, it is a pair $(M,\mu)$, where $M$ is an abelian group and $\mu:R\times M \rightarrow M $ such that if use the notation $ax$ for $\mu(a,x)$, where $a\in R,x\in M$, then following axioms are satisfied
+\begin{align*}
+        a(x + y) &= ax +ay \\
+    (a +b)x &= ax + bx\\
+    (ab)x &= a(bx)\\
+    1x&= x
+\end{align*}
+where $a,b\in R,$ and $x,y\in M$
+\end{definition}
+Equivalently, we can define an $R$-module by the following definition:
+\begin{definition}
+A \textbf{module \boldsymbol{M} over \boldsymbol{R}}, or an \textbf{\boldsymbol{R}-module}, is an additive abelian group $(M,0,+)$ together with an action of $R$, that is the following
+\begin{align*}
+R\times M &\to M\\
+(r,m) & \mapsto rm
+\end{align*}
+that defines a ring homomorphism
+\begin{align*}
+R &\to \en{f}\\
+r & \mapsto [m\mapsto rm]
+\end{align*}
+where $\en{M}$, the endomorphism (a homomorphism to oneself) ring of the abelian group $M$, is 
+\[
+\en{M} \coloneqq \{f:M\rightarrow M: f(0)=0,f(x_1+x_2)=f(x_1)+f(x_2)\} = \ho{M}{M}
+\]
+\end{definition}
+\begin{definition}
+Let, $M,N$ be $R$-modules. A mapping $f: M\rightarrow N$ is an \textbf{\boldsymbol{R}-module homomorphism} (or is \textbf{\boldsymbol{R}-linear}), if
+\begin{align*}
+    f(x+y) &= f(x)+f(y)\\
+    f(ax) &= a\cdot f(x)
+\end{align*}
+for all $a\in R$, and all $x,y \in M$. Think of linear transformations between vector spaces when $R$ is a field.
+\end{definition}
+\begin{definition}
+The set of all $R$-module homomorphisms between $M$ and $N$ is denoted \boldsymbol{\ho{M}{N}}. It is a module on its own right by the following rules: (I have to tell you what mapping $M\rightarrow N$ I get when I ``add" two such mappings; and I have to tell you what happens when I ``multiply" a mapping by a scalar from $R$)
+\begin{align*}
+    (f+g)(x) &= f(x) + g(x)\\
+    (af)(x) &= a\cdot f(x)
+\end{align*}
+for all $x\in M$, and $a\in R$
+\end{definition}
+\begin{prop}
+$\en{M} = \ho{M}{M}$ and actually by imposing\[
+(f_1f_2)(x) \coloneqq f_1(f_2(x))
+\]
+we make $\en{M}$ into a ring.
+\end{prop}
+
+
+\begin{eg}
+\[
+\{\text{abelian groups $M$}\} \iff \{\z\text{-modules}\}
+\]
+Observe that there exists a unique ring homomorphism
+\begin{align*}
+\z &\to \en{M}\\
+n & \mapsto [x\in M, x\mapsto n\cdot x = x+\dots +x]
+\end{align*}
+\end{eg}
+
+\begin{eg}
+If $k$ is a field then $k$-modules equivalent to $k$-vector spaces. Morphism of $k$-modules are equivalent to $k$-linear maps.
+\end{eg}
+As we can think of modules as more general ``vector spaces", there is an equivalent of a module having a basis.
+\begin{definition}
+A free module over a ring $R$ is isomorphic to a module of one of the form: (where $I$ is some indexing set)
+\[
+R^{(I)} \coloneqq \{\text{sequences }(x_i)_{i\in I}: \text{ each }x_i\in R,x_i=0\text{ for all but finitely many $i$}\}
+\]
+This has to be a module over $R$, so we define for all $r\in R$,
+\[
+(x)_{i \in I} +(y)_{i\in I} = (x_i+y_i)_{i\in I}
+\]
+and
+\[
+r(x)_{i\in I}=(rx_i)_{i \in I}
+\]
+Or equivalently, we say
+\[
+R^{(I)} \cong \bigoplus_{i\in I} M_i \text{ where each $M_i \cong R$ as an $R$-module}
+\]
+\end{definition}
+Then we have (Prof. Nelson wrote this, not too sure what it means)
+\[
+``\text{every $k$-module is free}" \iff ``\text{every vector space has a basis}"
+\]
+\begin{remark}
+Over any ring $R$ that is not a field, there are modules that are not free. Indeed, let $I\in R$ be an ideal other than $(0), (1)$. Then the module 
+\[
+M \coloneqq R/I
+\]
+is an $R$-module which is NOT free. Take example: $R=\z$, $I=(2)$, $M=\z/2\z$. 
+\end{remark}
+We will give a proof to this Remark, but before that we introduce one definition.
+\begin{definition}
+For any $R$-module $M$, the annihilator of $M$ is the set
+\[
+\ann{M}\coloneqq \{r\in R: rm=0,\text{ for all }m\inM\} \subset R
+\]
+That is, it is the set of elements in $R$ that ``hit every $m$ into 0".
+Check that $\ann{M}$ is an ideal of $R$.
+\end{definition}
+Clearly, if $M_1$ isomorphic to $M_2$ as $R$-modules, then they have the same annihilator.\\
+Now we give a proof of the Remark above.
+\begin{proof}
+(of the Remark) First, it is clear that $R/I$ is an $R$-module. (in the most natural sense)\\
+It is also clear that $\ann{R/I} = I$\\
+For a given free module $R^{(J)}$, notice that the annihilator is such that
+\[ 
+\ann{R^{(J)}} =\begin{cases} 
+                    R & $ J=\emptyset$  \\
+                    (0) & $ J\neq \emptyset$
+                \end{cases}
+\]
+This is because, if we remind ourselves that $R^{(J)}$ is a set of sequences indexed by $J$, of elements in $R$, such that all by finitely many of the entries are zero. Now if $J= \emptyset$, then it is vacuously true that every $r\in R$ satisfies this (actually, if we index with $\emptyset$, what exactly is $R^{(J)}$? )
+Thon't even have zero, so how can we satisfy the condiis impliewe d{R^{(J)}}s? that $R/I$ not isomorphtion of $\ann$ic to some $R^{(J)}$, unless $I = R$ or $I = (0)$
+\end{proof}
+\begin{eg}
+$I \subset R$ ideal. Consider $R/I$.\\
+Say $R=k[x_1,\dots,x_n]/I$, $I$ a radical ideal, and $k$ algebraically closed.. Let $J$ be another radical ideal containing $I$. Then its image $\overline{J}\subset R$ is a radical ideal of $R$.\\
+If we let $X=V(I)$, then $Y=V(J)\subset X$. The action of $R$ on the module $M=R/\overline{J}$ is just multiplication of functions. This is somehow a consequence of the fac that
+\[
+R \iff \{\text{functions $X\rightarrow k$}\}
+\]
+and
+\[
+R/\overline{J} \hookuparrow \{\text{functions $Y\rightarrow k$}\}
+\]
+
+\end{eg}
+For all modules $M_1$, and $M_2$, the set
+\[
+Hom_R(M_1,M_2)\coloneqq \{\text{R=module morphisms $f:M_1\rightarrow M_2$}\}
+\]
+is naturally an $R$-module:
+\[
+(r\cdot f)(x) = r\cdot f(x)=f(r\cdot x)
+\]
+NEED CLARIFICATION ON THIS EXAMPLE.
+O.K. THIS IS ALL VERY NICE BUT WHY DO WE CARE ABOUT MODULES AT ALL
+
+\date{04.10.2018}
+Recall from last time. We defined an $R$-module, we will just call this a module $M$. We gave examples of free modules, vector spaces being the same as $k$-modules, $\z$-modules being the same as rings (every ring is a $\z$-module). Also recall we defined, for modules $M_1,M_2$:
+\[
+\ho{M_1}{M_2} \coloneqq \{\text{module homomorphisms $f:M_1\rightarrow M_2$}\}
+\]
+    
+
+It is understood that from here on (actually this has been the case since the beginning), $\ho{\cdot}{\cdot}$ is defined for two modules that are both over the ring $R$.
+\section*{Properties of Hom}
+\subsection*{Property 1: $\ho{R}{M} \cong M$}
+For a module $M$ over $R$,
+\[
+\ho{R}{M} \cong M
+\]
+The bijection is given by the mapping 
+\[
+\mapping{\mu}{\ho{R}{M}}{M}{\varphi}{\varphi(1)}
+\]
+
+This is indeed a bijection. \\
+
+Surjection: given  $a\in M$, we can define $\varphi$ uniquely by
+\[
+\varphi_{(a)}(x) \coloneqq x \cdot a
+\]
+Then under the mapping we have $\mu(\varphi_{(a)})= \varphi_{(a)}(1)=1\cdot a = a$\\
+Injection: We show injectivity by showing that $\ker(\mu) = \{0\}$ (the zero mapping). If $\varphi \in \ker(\mu) $, this means that $\mu(\varphi) = \varphi(1) = 0$, then for any $r\in R$, $\varphi(r) = \varphi(1 \cdot r) = r \cdot \varphi(1) = r\cdot 0 = 0$, showing $\varphi$ is the zero mapping.
+\subsection*{Property 2: $\ho{-}{N}$ commutes with direct sums.}
+
+    \begin{definition}
+    Given modules $(M_i)_{i\in A}$, their \textbf{direct sum}:
+    \[
+    \bigoplus_{i\in A} M_i = \{\text{formal sums }\sum_{i\in A}m_i: m_i =0\text{ for a.e. $i$}\} = \{(m_i)_{i\in A}: m_i=0\text{ for a.e. }i\}
+    \]
+    is naturally a module. I find it more useful most of the time to think of them as tuples with ``finite support", rather than ``formal sums" which is misleading; this also makes the connection with the direct product clear.
+    \end{definition}
+    \begin{definition}
+    the \textbf{direct product} 
+    \[
+    \prod_{i\in A} M_i \coloneqq \{(m_i)_{i\in A}: m_i\in M_i\}
+    \]
+    
+    is a module
+    \end{definition}
+    Note that $\bigoplus_i M_i \subset \prod_i M_i$
+    \begin{lemma}
+    For all $R$-modules $M, N$,
+    \[
+    \ho{\bigoplus_i M_i}{ N} \cong \prod_i \ho{M_i}{N}
+    \]
+    as $R$-modules. This equivalence is given by the following isomorphism:
+    \[
+    \alpha: \ho{\bigoplus_i M_i}{ N} \rightarrow \prod_i \ho{M_i}{N}
+    \]
+    \[
+    \varphi \mapsto (\varphi \circ \kappa_i)_i
+    \]
+    Where
+    \[
+    \kappa_i: M_i \rightarrow \bigoplus_i M_i
+    \]
+    is the obvious map:
+    \[
+    m \in M_i \mapsto (0,0,0, \dots ,m \text{(at the $i$th position)} ,0,0,\dots)
+    \]
+    
+    \end{lemma}
+    \begin{proof}
+    This is a well-defined map of modules (i.e. the injectivity is obvious); we just need to check it is surjective. \\
+    Given $(\varphi_i)_i\in \prod_i \ho{M_i}{N} $, we may define
+    \[
+    \varphi \in \ho{\bigoplus_i M_i}{N}
+    \]
+    by setting
+    \[
+    \varphi((m_i)_i) \coloneqq \sum_i \varphi_i(m_i) \in N
+    \]
+    for $(m_i)_i \in \bigoplus_i M_i$. The sum on the right is well-defined because only finitely many $m_i$'s are nonzero, therefore only finitely many $\varphi_i(m_i) \in N$ are nonzero in $N$.
+    Then 
+    \[
+    \varphi \circ \kappa_i = \varphi_i
+    \]
+    Shown here: we know
+    \[
+    (\varphi \circ \kappa): M_i \rightarrow N
+    \]
+    Take $m_i\in M_i$, then
+    \[
+    (\varphi\circ \kappa_i)(m_i) = \varphi(0,0,\dots,m_i,0,\dots)=\varphi_i(m_i)
+    \]
+    thus the desired equality.
+    \end{proof}
+    We call $\alpha$ the map in the Lemma, and $\beta$ the inverse we just found. \\
+    NEED TO CHECK: 
+    \begin{enumerate}
+        \item $\alpha$, $\beta$ are morphisms of modules.
+        \item $\alpha \circ \beta$ and $\beta \circ \alpha$ are the identity
+    \end{enumerate}
+
+\begin{lemma}
+\[
+\ho{M}{\prod_i N_i} \cong \prod_i \ho{M}{N_i}
+\]
+\[
+\varphi \mapsto (\pi_i \circ \varphi)_i
+\]
+where 
+\[
+\pi_i : N \rightarrow N_i
+\]
+is the obvious map
+\end{lemma}
+\begin{proof}
+Similar to previous lemma.
+\end{proof}
+Before we give the third property, we need some definitions.
+\begin{definition}
+A \textbf{submodule} of a module is a subgroup closed under multiplication by $R$. (think of a vector subspace)
+\end{definition}
+\begin{definition}
+Given a module $M$ and a submodule $M'\subset M$, the \textbf{quotient abelian group $M''\coloneqq M/M'$} is naturally a module with the action described below.\\
+For all $r\in R$
+\[
+r \cdot (x+M') \coloneqq rx+M'
+\]
+\end{definition}
+\begin{definition}
+Given a morphism of modules $\varphi:M \rightarrow N$, the the \textbf{kernel of \boldsymbol{\varphi}}
+\[
+\ker(\varphi) \subset M
+\]
+defined in the usual way, is a submodule.
+\end{definition}
+\begin{definition}
+the \textbf{cokernel of \boldsymbol{\varphi}}
+\[
+\cok{\varphi} \coloneqq N/\varphi(M)
+\]
+is an $R$-module, since the image $\varphi(M)$ is a submodule of $N$ (verify this in your head), and so as we just mentioned, quotienting a submodule gives us another module.
+\end{definition}
+\subsection*{Property 3. \boldsymbol{\ho{M}{-}} preserves kernels}
+For all fixed module $M$,
+\[
+\ho{M}{-}
+\]
+preserves kernels. What we mean is the following\\
+First, note that if $\varphi:N_1\rightarrow N_2$ is a map of modules, then we get an induced map between Hom spaces:
+\[
+\mapping{\varphi_\ast\text{ or }\ho{M}{\varphi}}{\ho{M}{N_1}}{\ho{M}{N_2}}{f}{\varphi \circ f\text{, called the \textbf{pushforward of \boldsymbol{f} by \boldsymbol{\varphi}}}}
+\]
+Then
+\[
+\ker(\varphi_\ast :\ho{M}{N_1}\rightarrow \ho{M}{N_2}) \cong \ho{M}{\ker{\varphi}}
+\]
+\[
+(\ker(\varphi) \hookrightarrow N_1) \circ f \mapsfrom f
+\]
+\begin{proof}
+
+\end{proof}
+\[
+M \xrightarrow{f} \ker(\varphi) \hookrightarrow N_1 \xrightarrow{\varphi} N_2
+\]
+CHECK PICTURE.
+
+\begin{definition}
+Given morphism of modules $\varphi:M_1 \rightarrow M_2$ and a module $N$, we get the \textbf{pullback} mapping
+\[
+\mapping{\ho{\varphi}{N}= \varphi^\star}{\ho{M_2}{N}}{\ho{M_1}{N}}{f}{f\circ \varphi}
+\]
+\end{definition}
+\subsection*{Property 4. Pullbacks preserve cokernels/pullback sends cokernels to kernels}
+Want to show that
+\begin{align*}
+    \cok(\varphi^\star) &= \{\text{morphisms of modules: }g:M_1\rightarrow N\}/\varphi^\star (\{\text{morphisms }f:M_2\rightarrow N\})\\
+    &=
+\end{align*}
+
+SHORT DETOUR
+\begin{definition}
+A sequence of module morphisms 
+\[
+\dots \rightarrow M_{i-1}\xrightarrow{\varphi_{i}} M_i \xrightarrow{\varphi_{i+1}} M_{i+1} \rightarrow \dots
+\]
+is \textbf{exact at $M_i$} if $\Im(\varphi_{i}) = \ker(\varphi_{i+1})$, and is \textbf{exact} if it is exact at each $M_i$.
+\end{definition}
+\begin{eg}
+
+\[
+0\rightarrow M' \xrightarrow{\varphi} M \rightarrow \dots
+\]
+is exact at $M$ \iff $ker(\varphi) = \{0\}$ \iff $\varphi$ is injective
+\end{eg}
+\begin{eg}
+\[
+0\rightarrow M' \xrightarrow{\alpha} M \xrightarrow{\beta} M'' \rightarrow 0
+\]
+is exact
+\begin{align*}
+    \alpha\text{ is injective} &\iff \beta\text{ is surjective}\\
+    & \iff ker(\varphi)=Im(\alpha)\\
+    & \iff 
+\end{align*}
+\end{eg}
+\begin{lemma}[Hom-ing an exact sequence gives an exact sequence]
+If 
+\[
+0\rightarrow A \rightarrow B \rightarrow C
+\]
+is an exact sequence of modules. Then for any module $M$,
+\[
+0 \rightarrow \ho{M}{A} \rightarrow \ho{M}{B} \rightarrow \ho{M}{C}
+\]
+is exact.\\
+This is a reformulation of ``$\ho{M}{-}$ preserves kernels".\\
+Furthermore, if 
+\[
+A \rightarrow B\rightarrow C \rightarrow 0
+\]
+is exact, then for all module $N$,
+\[
+0 \rightarrow \ho{C}{N} \rightarrow \ho{B}{N} \rightarrow \ho{A}{N}
+\]
+is exact.
+\end{lemma}
+STILL NEED TO UNDERSTAND THIS.\\
+END DETOUR.\\
+going back to pullback
+\[
+\pi^\star: \ho{coker(\varphi)}{N} \cong \ker (\varphi^\star)
+\]
+We have exact sequence SEE PICTURE
+To complete the proof of $\pi^\star$ is isomorphism, we need to show, if we let $C = coker(\varphi)$,
+\[
+\pi^\star (f) \in ker(\varphi^\star)
+\]
+for all $f\in \ho{C}{N}$. Since for all $x\in M_1$, 
+\[
+\varphi^\star(\pi^\star(f))(x) = f(\pi(\varphi(x))) = 0
+\]
+Conversely given $\alpha \in \ho{M_1}{N}$ with $\alpha \in \ker(\varphi^\star)$, define
+\[
+\varphi\in \ho{C}{N}
+\]
+by
+\[
+\varphi(x) \coloneqq \alpha(\tilde{x})
+\]
+\where $\tilde{x}\in M_2$ is any preimage of $x = \tilde{x}+\varphi(M_1)\in C$.\\
+Note that $\alpha(\tilde{x})$ does not depend on this choice because
+\[
+\alpha(\varphi(M_1)) = \{0\}
+\]
+since $\varphi^\star (\alpha) =0$. This map $\alpha \mapsto \varphi$ gives a well-defined inverse to $\pi^\star$ above.
+
+\section*{Modules via Generators and Relations}
+motivating example: if we say a module has one generator $g$, and relations $f_1g=f_2g = \dots = f_ng=0$, for some elements $f_i\in R$, then the module is
+\[
+R/(f_1,\dots,f_n)
+\]
+Let $\gamma$ be any set (these will be the \textbf{generators}). We've already defined the free module
+\[
+R^{(\gamma)} = \{\sum_{g\in \gamma} a_g g: a_g \in R\text{ and $=0$ for a.e. $g\in\gamma$} \} = \bigoplus_{g\in \gamma} R_g
+\]
+let $\rho \subset R^{(\gamma)}$ (these will be the \textbf{relations}). It generates a submodule
+\[
+R\cdot \rho \subset R^{(\gamma)}
+\]
+Set
+\[
+M\coloneqq R^{(\gamma)}/R\cdot \rho
+\]
+We say $M$ is the $R$-module defined by the generators $\gamma$ and relations $\rho$.\\
+given any other module $N$, we know that 
+\[
+\ho{R^{(\gamma)}}{N} \cong \textup{Maps}(\gamma, N)
+\]
+The $\cong$ is a special case of Property 2., which says
+\[
+\ho{\bigoplus_i M_i}{N} = \prod \ho{M_i}{N}
+\]
+and 
+\[
+\ho{R}{N} \cong N
+\]
+To make $\cong $ more explicit we  have
+\[
+\varphi \mapsto \mapping{}{\gamma}{N}{g}{\varphi{g}}
+
+\]
+By the ``cokernels $\mapsto$ kernels" discussion,
+\[
+\ho{M}{N} \cong 
+\]
+SEE PICTURE
+
+\section*{Tensor Product of Modules}
+\begin{definition}
+Given two modules $M,N$, we define the \textbf{tensor product} to be the module with generators 
+\[
+\{(m,n): m\in M,n\in N\}
+\]
+and relations
+\[
+(m_1+m_2,n) - (m_1,n)-(m_2,n)
+\]
+\[
+(m, n_1+n_2) - (m,n_1)-(m,n_2)
+\]
+\[
+(am,n)-a(m,n)
+\]
+\[
+(m,an)-a(m,n)
+\]
+for all $m\in M$, $n\in N$, $a\in R$.\\
+We denote by $m \otimes n \in M\otimes N$ the image of $(m,n)$ under the mapping
+\[
+M \times N \rightarrow M \otimes N
+\]
+\end{definition}
+\date{09.10.2018}
+Recap: $R$ is a ring, $M$ an $R$-module. We showed last time:
+\begin{enumerate}
+    \item If the sequence of modules
+    \[
+    0 \rightarrow M' \rightarrow M \rightarrow M''
+    \]
+    is exact, then this implies for all module $N$, the sequence
+    \[
+    0\rightarrow \ho{N}{M'}\rightarrow \ho{N}{M} \rightarrow \ho{N}{M''}
+    \]
+    is exact
+    
+\end{enumerate}
+
+\begin{eg}
+SEE PICTURE
+
+
+\end{eg}
+\begin{definition}
+Let $M,N,P$ be modules. A \textbf{bilinear (R-bilinear)map} 
+\[
+f: M\times N \rightarrow P
+\]
+is a map for which for all $a,a',b,b' \in R$ and $m,m'\in M$ and $n,n'\in N$
+\[
+f(am+a'm', bn+b'n') = abf(m,n)+a'bf(m'n)+ ab'f(m,n')+a'b'f(m',n')
+\]
+\end{definition}
+\begin{eg}[bilinear map]
+The map
+\[
+\mapp{M\times N}{M\otimes N}{(m,n)}{m \otimes n}
+\]
+is bilinear
+\end{eg}
+\begin{lemma}
+For all modules $M,P$, we can identify
+\[
+\ho{M\otimes N}{P} \cong \{\text{bilinear }f:M\times N\rightarrow P\}
+\]
+where we can take $f\in \{\text{bilinear }f:M\times N\rightarrow P\}$ and send it
+\[
+f \mapsto [m\otimes n \mapsto f(m,n)]
+\]
+and we can take $\varphi \in \ho{M\otimes N}{P}$ and send it to
+\[
+\varphi \mapsto \varphi \circ t
+\]
+where
+\[
+t: M\times N \rightarrow M \otimes N
+\]
+\end{lemma}
+\begin{proof}
+Description of morphisms out of $R^{\gamma}/R\cdot \rho$ specialized to $\otimes$.
+\end{proof}
+\section*{Properties of Tensor Product}
+\subsection*{Property 1.}
+\[
+R \otimes M \cong M
+\]
+\[
+\alpha: a \otimes m \mapsto am
+\]
+\[
+\beta: 1 \otimes m \mapsfrom m
+\]
+key point: $\alpha$ is a well-defined morphism of modules. Indeed, $\alpha$ comes (via the above Lemma) from the map (because the Lemma gives us a bijection)
+\[
+\mapping{\tilde{\alpha}}{R\times M}{M}{(a,m)}{am}
+\]
+and $\tilde{\alpha}$ is bilinear, so $\tilde{\alpha} \in \{\text{bilinear }f:R\times M\rightarrow M\}$ , then we identify a $\alpha \in \ho{R\otimes M}{M}$. Noting: 
+\[
+\tilde{\alpha}(a,m) = am = \alpha(a \otimes m)
+\]
+$\beta$ is a morphism of modules as well:
+\[
+\brta(am) = 1 \otimes am = a(1 \otimes m)
+\]
+Further,
+\[
+\alpha \circ \beta , \beta \circ \alpah = \textup{id}
+\]
+For example, to check $\beta \circ \alpha = \textup{id}$, it suffices to check on the generators $a \otimes m$ of $R \otimes M$, we have
+\[
+a \otimes m \mapsto am \mapsto 1 \otimes am = a \otimes m 
+\]
+\subsection*{Property 2. \boldsymbol{\otimes}  ``commutes" with $\bigoplus$}
+If $M = \bigoplus M_i$, then
+\[
+M \otimes N \cong \bigoplus_i(M_i \otimes N)
+\]
+\[
+\left(\sum_i m_i\right)\otimes n \mapsto \sum_i\left(m_i \otimes n\right)
+\]
+\[
+m_i \otimes n \mapsfrom m_i \otimes n
+\]
+\begin{corollary}
+If $M_i$, $i=1,2$, is a free module, then
+\[
+M_i \cong R^{(I_i)}
+\]
+with bases $(e_i)_{i\in I}$ for $M_1$, and $(f_j)_{j\in I_2}$ for $M_2$. Where
+\[
+(e_i)_k=
+\begin{cases}
+1 & k=1\\
+0 & k\neq i
+\end{cases}
+\]
+
+similar for j.\\
+Then
+\[
+M_1 \otimes M_2 \cong R^{(I_1\times I_2)}
+\]
+with basis $e_i \otimes f_j$, $(i,j) \in I_1\times I_2$
+\end{corollary}
+\begin{proof}
+
+\end{proof}
+\begin{eg}
+$k$ a field, 
+\[
+k^m \otimes_k k^n \cong k^{mn} 
+\]
+
+\end{eg}
+\subsection*{Property 3. Functoriality}
+Given module morphisms
+\[
+\alpha: M \rightarrow M'
+\]
+\[
+\beta: N \rightarrow N'
+\]
+there exists an induced homomorphism
+\[
+\mapping{\alpha \otimes \beta}{M \otimes N}{M' \otimes N'}{m \otimes n}{\alpha(m) \otimes \beta(n)}
+\]
+coming from the bilinear map (using the previous Lemma)
+\[
+\mapping{\alpha \times \beta}{M \times N}{M' \otimes N'}{(m,n)}{\alpha(m)\otimes \beta(n)}
+\]
+\subsection*{Property 4. Preservation of cokernels (right-exactness)}
+If we have the exact sequence
+\[
+M' \rightarrow M \rightarrow M'' \rightarrow 0
+\]
+is exact, then so is for all $N$,
+\[
+M'\otimes N \xrightarrow{\alpha \otimes 1} M \otimes N \xrightarrow{\beta \otimes 1} M'' \otimes N \rightarrow 0
+\]
+\begin{proof}
+in a bit
+\end{proof}
+\subsubsection*{A simple application}
+Suppose we can describe a module $M$ using generators $\gamma$ and relations $\rho$. Then
+\[
+R^{(\rho)} \rightarrow R^{(\gamma)} \rightarrow M \rightarrow 0
+\]
+is exact. Then so is the same sequence tensor with $N$:
+\[
+R^{(\rho)} \otimes N \rightarrow R^{(\gamma)}\otimes N \rightarrow M \otimes N \rightarrow 0
+\]
+we know that
+\[
+R^{(\rho)} \otimes N \cong N^{(\rho)}
+\]
+and
+\[
+R^{(\gamma)}\otimes N \cong N^{(\gamma)} \coloneqq \bigoplus_\gamma N
+\]
+
+\section*{Base Extention/Restriction}
+\subsection*{Base Restriction}
+Let 
+\[
+R \xrightarrow{\varphi} S
+\]
+be a ring homomorphism. Given an $S$-module $N$, we may define an $R$-module $N_R$ (also written $\textup{Res}_R^SN$, or $N$), called the \textbf{base restriction}, via
+\[
+R \xrightarrow{\varphi} S \rightarrow \en{N}
+\]
+\subsection*{Base Extension}
+Given an $R$-module $M$, the base extension is
+\[
+S \otimes_R M
+\]
+Note: S is naturally an $R$-module, via $\varphi$, where
+\[
+r\cdot s \coloneqq \varphi(r)s
+\]
+also, $S \otimes_R M$ is an $S$-module, via
+\[
+s \cdot (s_1 \otimes m) \coloneqq ss_1 \otimes m
+\]
+
+\begin{lemma}
+For all $R$-modules $M$, and for all $S$-modules $N$, 
+\[
+\ho{S\otimes_R M}{N}_{S-mod} \cong \ho{M}{N_R}_{R-mod}
+\]
+where if we have $\alpha \in \ho{S\otimes_R M}{N}_{S-mod}$ and $\beta \in \ho{M}{N_R}_{R-mod}$ then
+\[
+\beta(m) \coloneqq \alpha(1 \otimes m)
+\]
+\[
+\alpha(s \otimes m) \coloneqq s \cdot \beta(m)
+\]
+\end{lemma}
+\begin{proof}
+exercise.
+\end{proof}
+
+\section*{Miscellaneous Stuff}
+\subsection*{1. Tensor Product of $R$-Algebras}
+Given $A,B$ $R$-algebras, we can cook up
+\[
+A \otimes_R B
+\]
+which has the structure of an $R$-algebra. We define
+\[
+(a\otimes b) \cdot (a' \otimes b') \coloneqq aa' \otimes bb'
+\]
+Gives a well-defined map 
+\[
+(A \otimes B)^2 \rightarrow A \otimes B
+\]
+that satisfies $R$-algebra axioms.\\
+QUESTION: What is $\cx \otimes_\r \cx$?\\
+Note: there are $R$-algebra maps
+\[
+\mapp{A}{A\otimes_R B}{a}{a\otimes 1}
+\]
+\[
+\mapp{B}{A\otimes_R B}{b}{1 \otimes b}
+\]
+As $A \otimes_R B$ is also an $A$-algebra, or a $B$-algebra.
+
+\section*{Localization of Modules}
+Given $R$ a ring and $U \subset R$ a multiplicatively closed subset, we defined the localization
+\[
+R[U^{-1}]
+\]
+before.\\
+More generally, for any $R$-module $M$, we may define 
+\[
+M[U^{-1}]
+\]
+which is an $R[\inv{U}]$-module.
+\begin{definition}
+\[
+M[\inv{U}] \coloneqq \left\{\frac{m}{u}: m\in M, u\in U\right\}/\sim
+\]
+where
+\[
+\frac{m}{u} \~ \frac{m'}{u'} \iff there exsts v\in U : v
+\]
+
+\end{definition}
+\begin{lemma}[2.4 in Eis]
+\[
+M[U^{-1}] \cong R[U^{-1}] \otimes_R M
+\]
+\[
+\alpha: \frac{am}{u} \mapsfrom \frac{a}{u} \otimes m
+\]
+\[
+\beta: \frac{m}{u} \mapsto \frac{1}{u} \otimes m
+\]
+
+\end{lemma}
+\begin{proof}
+$\alpha, \beta$ are well-defined morphisms.\\
+For $\alpha$, via the ``key Lemma of $\otimes$".\\
+For $\beta$, explicit calculation: if $v(u'm-um')=0)$, check
+\[
+\beta(\frac{m}{u}) = \beta(\frac{m'}{u'})
+\]
+and $\alpha \circ \beta, \beta \circ \alpha = \textup{id}$
+\end{proof}
+\begin{remark}[localization of modules defines a functor]
+For all $f: M \rightarrow N$ module morphisms, there exists a unique 
+\[
+\mapping{f'=f[U^{-1}]}{M[U^{-1}]}{N[U^{-1}]}{\frac{m}{u}}{\frac{f(m)}{u}}
+\]
+\end{remark}
+\section*{Flatness}
+Let $N$ be an $R$-module
+\begin{definition}[Lemma?]
+The following are equivalent, and $N$ is called \textbf{flat} if they are satisfied.
+\begin{enumerate}
+    \item for all exact sequences of modules
+    \[
+    0 \rightarrow M' \rightarrow M
+    \]
+    the induced seqeunce 
+    \[
+    0 \rightarrow M' \otimes N \rightarrow M \otimes N
+    \]
+    is exact.
+    \item tensoring with $N$ preserves exactness of any sequences of modules.
+\end{enumerate}
+\end{definition}
+\date{11.10.2018}
+\textbf{missed first half, second half starting here}\\
+
+\begin{definition}[notherian module]
+
+\end{definition}
+\begin{lemma}
+$M$ is noetherian iff. $M$ satisfied the ACC (Ascending Chain Condition) on submodules iff. $M$ satisfies the Maximal Condition on submodules (any non-empty collection $S$ of submodules of $M$ has a ``maximal element" $M'$, such that $M' \not \subset N$ for all $N\in S$).
+\end{lemma}
+\begin{proof}
+similar proof to rings, also see A-M chapter 7
+\end{proof}
+\begin{prop}
+If $R$ is a noetherian ring, and $M$ a finitely generated module over $R$, then $M$ is a noetherian module.
+\end{prop}
+We use the following lemma to prove
+\begin{lemma}
+Over any ring $R$ if 
+\[
+0\rightarrow M' \rightarrow M \rightarrow M'' \rightarrow 0
+\]
+is an exact sequence of modules, then $M$ is noetherian if and only if $M,M'$ noetherian
+\end{lemma}
+\begin{proof} [Lemma]
+Sketch: consider ACC
+\end{proof}
+\begin{proof}
+PROOF OF PROPOSITION. The Lemma implie sthe prop. Choose generators $e_1, \dots , e_n$ for $M$, then
+\[
+0 \rightarrow M' \rightarrow R^n \xrightarrow{\varphi} M \rightarrow 0
+\]
+where under $\varphi$, we have
+\[
+x \mapsto x_1e_1+ \dots + x_ne_n
+\]
+The Lemma applied inductively to 
+\[
+0 \rightarrow R \rightarrow R^n \rightarrow R^{n-1} \rightarrow 0
+\]
+implies $R^n$ is noetherian. \\
+Lemma implies $M$ noetherian.
+WHAT
+\end{proof}
+\section*{Localization at a prime p}
+For a prime ideal $p$, we have 
+\[
+U_p \coloneqq R-\p
+\]
+which is multiplicatively closed.\\
+Suppose $M$ is module, w ewrite
+\[
+M_p \coloneqq M[\inv{U_\p}]
+\]
+\begin{lemma}
+Let $M$ module over $R$ a ring. Let $x\in M$. Then $x=0$ if and only if for all $\p \in \spec{R}$ the image $x_\p \in M_p$, of $x$ under the canonical map, satisfies $x_\p = 0$.
+\end{lemma}
+\begin{proof}
+forward direction is immediate. For the reverse direction: Assume $x_\p = 0$, then for all $a\in U_\p = R-\p$, we have
+\[
+ax = 0
+\]
+this is because, in $M[\inv{U_\p}]$ we have
+\[
+\frac{x}{1} \sim \frac{0}{1}
+\]
+implying
+\[
+(x\cdot 1-0\cdot 1)a = ax = 0
+\]
+for any $a\in U_\p = R-\p$. Therefore we must have 
+\[
+U_\p = R-\p \subset \ann{x}
+\]
+thus
+\begin{equation}
+    \ann{x} \not\subset \p
+\end{equation}
+for any $\p$ prime ideal.
+
+(if this were true then $R-\p \subset \p$ which is absurd).\\
+We want to show that $x=0$, so suppose the contrary that $x\neq 0$. Then since 
+\[
+\ann{x} = (1) \iff x=0
+\]
+
+we must have
+\[
+\ann{x} \subsetneq R
+\]
+since $\ann{x}$ is an ideal, there must exist some maximal ideal $P$ containing it:
+\[
+\ann{x} \subset P
+\]
+But maximal ideals are prime, so we have a prime ideal containing $\ann{x}$, but this contradicts (1). Therefore we must have $x=0$.
+\end{proof}
+\begin{corollary}
+If $K\subset M$ is a submodule, then $K=0$ if and only if $K_\p = 0$ for all $\p$.
+\end{corollary}
+\begin{proof}
+proof of lemma shows it suffices to consider maximal ideals. For reverse direction, suppose $K\neq 0$, then there exists $x\neq x \in K$, and there exists $\p$ such that $x_\p \neq 0$ implying $K_\p \neq 0$, a contradiction. 
+\end{proof}
+\begin{corollary}
+Let $\varphi: M \rightarrow N$ morphism of modules. Then $\varphi$ is injective if and only if for all $\p$, $\varphi_\p$ is injective, where
+\[
+\mapping{\varphi_\p}{M_\p}{N_\p}{m/u}{\varphi(m)/u}
+\]
+Similar statement for surjective. Similar statement for bijective/isomorphic.
+\end{corollary}
+\begin{proof}
+\begin{enumerate}
+    \item $\varphi$ injective $\iff$  $\ker(\varphi) = 0$ $\iff$ $\ker(\varphi)_\p = 0$, but
+    \[
+    \ker(\varphi)_\p = \ker(\varphi_\p)
+    \]
+    by the fact that localization preserves kernels. so we have
+    \[
+    \ker(\varphi_\p) =0
+    \]
+    $\iff$ $\varphi_\p$ injective for all $\p$.
+\end{enumerate}
+\end{proof}
+\begin{prop}
+Let $\phi: R \rightarrow S$ a ring map. Let $M,N$ be $R$-modules. There is a map
+\[
+\mapping{j}{\ho{M}{N} \otimes_R S}{\ho{M \otimes_R S}{N \otimes_R S}}{f \otimes a }{[m\otimes S \mapsto f(m)\otimes aS]}
+\]
+This is not in general an isomorphism, but if $S$ is flat over $R$, and $M$ is finitely-presented, then $j$ is an isomorphim. An example of the flat one $S=R[\inv{U}]$
+\end{prop}
+\begin{proof}
+Write down a finite presentation for $M$: for some $F,G$ free $R$-modules of finite rank (i.e. $F \cong R^m,G \cong R^n$)
+\[
+F \rightarrow G \rightarrow M \rightarrow 0
+\]
+an exact sequence. Write $M' \coloneqq M \otimes_R S$, etc (prime means tensor with $N$). Likewise, we have
+\[
+0\rightarrow \ho{M}{N} \rightarrow \ho{G}{N} \rightarrow \ho{F}{N}
+\]
+is exact. Since $S$ is flat, this implies
+\[
+0 \rightarrow \ho{M}{N}' \rightarrow \ho{G}{N}' \rightarrow \ho{F}{N}'
+\]
+is exact. We would like to show
+\[
+\ho{M}{N}' = \ho{M'}{N'}
+\]
+we have 
+\[
+\ho{G}{N}' \cong (N^n)' = (N')^n
+\]
+See Eisenbud 2.2
+\end{proof}
+\date{16.10.2018}
+\section*{Associated Primes of Ideals}
+Let $R$ be a noetherian ring, and $M$ a finitely generated module, which from last time we know $M$ is noetherian module.\\
+\begin{definition}
+A prime $\p \subset R$ is \textbf{associated to \boldsymbol{M}} if there exists $0 \neq f\in M$ such that 
+\[
+P = \ann{f} = \{a \in R: a\cdot f =0\}
+\]
+\end{definition}
+\begin{notation}
+\[
+\Ass(M) = \Ass_R(M) = \{\text{associated primes of }M\}
+\]
+\end{notation}
+\begin{remark}
+in general for all $f\in M$, we have
+\begin{equation}
+    \bigslant{R}{\ann{f}} \cong R\cdot f 
+\end{equation}
+
+where $R\cdot f$, the submodule of $M$ generated by elements of the form $\lambda f $, where $\lambda \in R$ ,and $f$ is the same fixed $f$ (so actually every element is of the form $\lambda f$). This follows from considering the module morphism
+\[
+\mapping{\phi}{R}{R}{r}{rf}
+\]
+Then 
+\[
+\ker(\phi) = \ann{f}
+\]
+Thus by the isomorphism theorem,
+\[
+\bigslant{R}{\ker(\phi)} = \bigslant{R}{\ann{f}} \cong \Im{f} = R\cdot f
+\]
+\end{remark}
+This enables us to give the following proposition:
+\begin{prop}
+a prime $\p$ is associated to $M$ if and only if $M$ contains a submodule isomorphic to $R/\p$.
+\end{prop}
+\begin{proof}
+Suppose we have a submodule $S \subset M$, such that
+\[
+S \cong \bigslant{R}{\p}
+\]
+Then any nonzero element $f\in S$ has the property
+\begin{equation}
+    \ann{f} = \p
+\end{equation}
+Indeed let $\tilde{f} \in R$ represent $f\in R/\p$. Then $\tilde{f} \notin \p$ (because if $\tilde{f}\in \p$, then $f = 0$ in $R/ \p$, so $f=0$ in $S$, contrary to assumption). If $a\in R$ satisfies $af = 0$ (i.e. $a\in \ann{f}$), then $a\tilde{f} \in \p$, so by definition of prime, $a\in \p$. Thus 
+\[
+\ann{f} \subset \p
+\]
+Conversely, $\p$ annihilates all of $R/\p$. Therefore
+\[
+\p = \ann{f}
+\]
+So this shows that $\p$ is indeed associated to $M$.\\
+On the other hand, if we assume that $\p$ is associated to $M$, assume $\p = \Ass(f)$, for some $f\in M$. Then by the above remark, we have
+\[
+\bigslant{R}{\ann{f}} = \bigslant{R}{\p}\cong R \cdot f
+\]
+so we've just shown that $R/\p$ is isomorphic to some submodule.
+\end{proof}
+\begin{definition}
+Let $I\subset R$ be any ideal. We say that a prime ideal $\p\in R$ is a \textbf{minimal prime of \boldsymbol{I}} if $I \subset \p$ and there exist no prime ideal $\mathfrak{q}$, such that 
+\[
+I \subset \mathfrak{q} \subsetneq \p
+\]
+\end{definition}
+TO BE SHOWN LATER: $\p $ is associated to $M$ if and only if $\p$ is a minimal prime of $\ann{f}$ for some $0\neq f \in M$.
+\begin{eg}
+(associated primes)
+\begin{enumerate}
+    \item $\Ass(\{0\}) = \emptyset$
+    \item for all primes $\p$, $\Ass(R/\p) = \{\p\}$ because as we have seen, every nonzero element $f\in R/\p$ has $\ann{f} = \p$.
+    \item for all $n\geq 1$, $p$ a prime number, then consider $\z/p^n\z$, as a $\z$-module, then
+    \[
+    \Ass_\z (\bigslant{\z}{p^n \z}) = \{(p)\}
+    \]
+    \begin{proof}
+    Any $0\neq f \in \z/p^n \z$ may be written as
+    \[
+    f = k p^n = up^m, \quad \text{for some } u\in(\bigslant{\z}{p^n \z})^\ast = \bigslant{\z}{p^n \z} \setminus \{0\}
+    \]
+    \[
+    \text{ where }
+    0\leq m\leq n-1
+    \]
+    Then 
+    \[
+    \ann{f} = \{a\in \z: a\cdot up^m = 0 = jp^n\text{ for some $j$}\}= (p^{n-m}) = \{\text{all multiples of $p^{n-m}$}\}
+    \]
+    which is a prime ideal if any only if $m=n-1$ (because prime ideals in $\z$ are exactly the ones generated by a prime number, and the only way $(p^{n-m})$, an ideal generated by a prime power can be a prime ideal is if the power is $1$), which occurs if we take $f= p^{n-1}$, in which case 
+    \[
+    \ann{f} = (p)
+    \]
+    \end{proof}
+\end{enumerate}
+
+\end{eg}
+Recall: we assume $R$ noetherian.
+\begin{lemma}
+Let $P$ be any maximal element of the following set of ideals
+\[
+\{\ann{f}: 0\neq f \in M\}
+\]
+Then $P$ is a prime ideal.
+\end{lemma}
+\begin{proof}
+Write
+\[
+P = \ann{f}, \quad 0\neq f \in M
+\]
+For some $f$. Thus $P\neq R$ because $f\neq 0$.\\
+Let $a\in R$, $b\in R-P$, with $ab\in P$, we want to show $a\in P$ (in order to show that $P$ is prime). We have, since $P = \ann{f}$:
+\[
+b\in R-P \iff bf \neq 0 
+\]
+\[
+ab\in P \iff abf=0
+\]
+so $a\in \ann{bf}$, and $P = \ann{f} \subset \ann{bf}$. But the maximality of $P$ forces 
+\[
+\ann{bf} = \ann{f}
+\]
+so $a\in P$.
+\end{proof}
+\begin{exercise}
+COUNTER EXAMPLE, NON NOETHERIAN
+Take $R = \z[x_1,x_2,\dots]$, 
+\[
+f_1 = x_1
+\]
+\[
+f_2 = x_1x_2
+\]
+\[
+\vdots
+\]
+\[
+M = \z[x_1,\dots] / (x_1^1, x_2^2, x_3^3, \dots)
+\]
+\end{exercise}
+\begin{corollary}
+If $M\neq 0$, then $\Ass(M) \neq \emptyset$. (this uses that $R$ is noetherian)
+\end{corollary}
+\begin{lemma}
+Suppose given a short exact sequence of modules
+\[
+0 \rightarrow M'\xrightarrow{\phi} M \xrightarrow{\gamma} M'' \rightarrow 0
+\]
+Then
+\[
+\Ass(M') \subset \Ass(M) \subset (\Ass(M') \cup \Ass(M''))
+\]
+\end{lemma}
+\begin{proof}
+FIRST INCLUSION:\\
+If $\p \in \Ass(M')$, then by Proposition 6., $R/\p$ is isomorphic to some submodule of $M'$, that is to say, there is an injection
+\[
+R/\p \hookrightarrow M'
+\]
+now from the exact sequence, we have then 
+\[
+R/\p \hookrightarrow M' \hookrightarrow M
+\]
+and since composition of injections is an injection, we have that $R/\p$ injects into $M$, which is to say $R/\p$ is isomorphic to its image in $M$ which is a submodule of $M$, thus $\p \in \Ass(M)$.
+SECOND INCLUSION:\\
+It suffices to show if $\p \in \Ass(M)$ and $\p \notin \Ass(M')$, then $\p \in \Ass(M'')$. Let $\p$ be given with those assumed properties. So we can let $f\in M$ with $\ann{f} = \p$. Thus, by Proposition 6. again, we have that
+\[
+S \coloneqq R\cdot f \cong \bigslant{R}{\p} \xhookrightarrow{\text{as submodule}} M
+\]
+We have also from the Proposition that any nonzero element of $S$ has annihilator $\p$. We can again regard $M'$ as a submosule of $M$ (because we have an injection from the excat sequence). Then
+\[
+S \cap M' = \{0\}
+\]
+(otherwise, some element of $M'$ has annihilator $\p$ but by assumption $\p \notin \Ass(M')$)\\
+By exactness, $\ker(\gamma) = \Im(\phi) = M'$. Therefore the kernel of the composition
+\[
+j: S \hookrightarrow M \xrightarrow{\gamma} M''
+\]
+is $S \cap M' = \{0\}$, so $j$ is injective, thus
+\[
+\p \in \Ass(M'')
+\]
+\end{proof}
+\begin{lemma}
+Any $M$ (f.g. over $R$ a noetherian ring) admits a filtration of submodules of the following form
+\[
+\{0\} = M_0\subsetneq M_1 \subsetneq M_1 \subsetneq \dots \subsetneq M_n = M
+\]
+such that
+\[
+\bigslant{M_j}{M_{j-1}} \cong \bigslant{R}{\p_j}
+\]
+for some primes $\p_1,\dots,\p_n \subset R$.
+\end{lemma}
+\begin{proof}
+If $M = \{0\}$, done. Else, let $\p_1 \in \Ass(M)$ $(\neq \emptyset \text{ by above Corollary})$. Therefore by Proposition 6., 
+\[
+\bigslant{R}{\p_1} \cong M_1 \subset M
+\]
+for some submodule $M_1$. If $M_1 = M$, then we are done. Else, let $\p_2 \in \Ass(M/M_1) \neq \emptyset$. Then again we get
+\[
+\bigslant{R}{\p_2} \cong \overline{M_2} \subset \bigslant{M}{M_1}
+\]
+Where $\overline{M_2}$ is a submodule of $M/M_1$. Let $M_2 \subset M$ be the preimage (under the projection) of $\overline{M_2}$. Then 
+\[
+\bigslant{M_2}{M_1} \cong \bigslant{R}{\p_2}
+\]
+Repeating this, we eventually get $M_n = M$ because $M$ is noetherian so satisfies the ascending chain condition on submodules. 
+\end{proof}
+\begin{corollary}
+With notation as in the above Lemma, we see that
+\[
+\Ass(M) \subset \{\p_1,\dots ,\p_n\}
+\]
+\end{corollary}
+\begin{proof}
+Induct on $n$. if $n=1$, $M\cong R/\p_1$, so 
+\[
+\Ass(M) \subset \{\p_1\}
+\]
+If $n \geq 1$, we can construct the short exact sequence
+\[
+0 \rightarrow M_1 \rightarrow M \rightarrow M'' \rightarrow 0
+\]
+where
+\[
+M'' \coloneqq \bigslant{M}{M_1}
+\]
+get filtration
+\[
+0 \subsetneq \overline{M_2} \subsetneq \dots \subsetneq \overline{M_n} = M/M_1
+\]
+By inductive hypothesis we get
+\[
+\Ass(M/M_1) \subset \{\p_2,\dots ,\p_n\}
+\]
+Note: $M_j/M_{j-1} \cong \overline{M_j} / \overline{M_{j-1}}\cong R/\p_j$ for all $j\geq 2$. So previous two Lemmas give the conclusion.\\
+We define $\overline{M_j}$ the image of $M_j$ in $M/M_1$
+\end{proof}
+\begin{corollary}
+If 
+\[
+M = M_1 \oplus \dots \oplus M_n
+\]
+then 
+\[
+\Ass(M) = \bigcup_j \Ass(M_j)
+\]
+\end{corollary}
+\begin{proof}[given as exercise]
+Induct on $n$. If $M = M_1 \oplus M_2$, then we can construct the short exact sequence of modules:
+\[
+0 \rightarrow M_1 \xrightarrow{f} M \xrightarrow{g} M_2 \rightarrow 0
+\]
+where
+\[
+\mapping{f}{M_1}{M}{x}{(x,0)}
+\]
+and
+\[
+\mapping{g}{M}{M_2}{(m_1,m_2)}{m_2}
+\]
+then by Lemma 11., we must have
+\[
+\Ass(M) \subset (\Ass(M_1) \cup \Ass(M_2))
+\]
+On the other hand, for equality, we can regard $M_1$ and $M_2$ both as submodules of $M$, then for $\p \in \Ass(M_1)\cup \Ass(M_2)$, WOLOG, say $\p \in \Ass(M_1)$, then 
+\[
+\p = \ann{f}, f\in M_1
+\]
+but then $f\in M$ as well so we have $p\in \Ass(M)$, therefore we have
+\[
+\Ass(M) \supset \Ass(M_1) \cup \Ass(M_2)
+\]
+Now suppose $n > 2$, and assume the assertion is true for previous cases of smaller $n$. Let $A\coloneqq \bigoplus_{i=1}^{n-1} M_i$, then by the induction hypothesis we have
+\[
+\Ass(A) = \bigcup_{i=1}^{n-1}\Ass(M_i)
+\]
+Now we have $M = A \oplus M_n$, so we can again construct the short exact sequence:
+\[
+0 \rightarrow A \xrightarrow{f} M \xrightarrow{g} M_n \rightarrow 0
+\]
+and again we can conclude that
+\[
+\Ass(M) \subset \Ass(A) \cup \Ass(M_n)
+\]
+and similarly we can conclude the other inclusion.
+\end{proof}
+\begin{eg}
+consider the exact sequence of $\z$-modules :
+\[
+0 \rightarrow \z \xrightarrow{\times 2} \z \rightarrow \bigslant{\z}{2\z} \rightarrow 0
+\]
+Since only $0$ can annihilate any integer, we know trivially that
+\[
+\Ass_\z (\z) = \{(0)\}
+\]
+And also, we know that
+\[
+\Ass_\z (\bigslant{\z}{2\z}) = 2\z = \{(2)\}
+\]
+And note that the inclusion that the Lemma gives us is true: $\{(0)\} \subset\{(0)\} \subsetneq \{(0)\}\cup \{(2)\} $
+\end{eg}
+\begin{corollary}
+\[
+\Ass_\z (\z/\p_1^{a_1}\cdot \p_n^{a_n}) = \{(\p_1,\dots, \p_n)\}
+\]
+where $\p_j$ distinct primes, $a_j \geq 1$.
+\end{corollary}
+Associated primes behave well with respect to localization:
+\begin{lemma}
+The map
+\[
+\spec(R[\inv{U}]) \hookrightarrow R
+\]
+satisfies 
+\[
+(\spec{R[\inv{U}]})\cap \Ass_R(M) = \Ass_{R[\inv{U}]}(M[\inv{U}])
+\]
+that is to say,
+\begin{enumerate}
+    \item If $\p\in \Ass_R(M)$ and $\p\cap U = \emptyset$, in particular we know
+    \[
+    \p\cap U = \emptyset \iff \p [U^{-1}] \text{ is prime} \iff \p[\inv{U}] \neq R[\inv{U}]
+    \]
+    then, $\p\in \Ass_R(M)$ and $\p\cap U = \emptyset$ implies
+    \[
+    \p[\inv{U}] \in \Ass_{R[\inv{U}]}(M[\inv{U}])
+    \]
+    \item If $Q \in \Ass_{R[\inv{U}]}(M[\inv{U}])$, then $Q = \p[\inv{U}]$ for some $\p \in \spec{R}$, $\p \cap U = \emptyset$, $\p \in \Ass_R(M)$
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\begin{enumerate}
+    \item We are given $\pi: R/\p \hookrightarrow M$ as a submodule. We get 
+    \[
+    (R/\p)[U^{-1}]\cong R[\inv{U}]/\p[U^{-1}] \hookrightarrow M[U^{-1}]
+    \]
+    \item Given $R[U^{-1}]/Q \hookrightarrow M[\inv{U}]$, since $Q$ is prime, it is of the form 
+    \[
+    Q = \p[U^{-1}]
+    \]
+    where $\p \in \spec{R}$, $\p \cap U = \emptyset$. Thus
+    \[
+    (R/\p)[U^{-1}] \cong R[U^{-1}]/\p[U^{-1}] \hookrightarrow M[U^{-1}]
+    \]
+    Note: $R/\p$ is a finitely presented module, because both $R$ and $\p$ are finitely generated. Therefore by Theorem from last time, we have
+    \[
+    \ho{R/\p}{M}_R[U^{-1}] \cong \ho{(R/\p)[U^{-1}]}{M[U^{-1}]}_{R[U^{-1}]}
+    \]
+    then
+    \[
+    \varphi = \frac{f}{u}
+    \]
+    where
+    \[
+    f\in \ho{R/\p}{M}_R,\quad u\in U
+    \]
+    \begin{claim}
+    $f$ is injective, thus $R/\p \hookrightarrow M$, so $\p \in \Ass(M)$, as required.
+    \end{claim}
+    \begin{proof}
+    check this using that $U$ acts on $R/\p$ by nonzero divisors, since $U\cap \p = \emptyset$
+    \end{proof}
+\end{enumerate}
+\end{proof}
+\begin{theorem}
+Suppose $R$ is noetherian, $M$ is finitely generated module, $M\neq 0$, then
+\[
+\Ass(M) 
+\]
+is nonempty, finite, and every minimal prime of $\ann{M}$ is associated. And
+\[
+\{\text{zero divisors on }M\} \coloneqq \bigcup_{0\neq f \in M} \ann{f}
+\]
+is equal to 
+\[
+\bigcup_{\p\in \Ass(M)}\p
+\]
+\end{theorem}
+\begin{proof}
+NONEMPTY: we did it.\\
+FINITE: we did it.\\
+Let $\ann{M} \subset \p $, $\p$ minimal. Want to check that it is associated. We have that the localization $M_\p \neq \{0\}$.
+\[
+p \coloneqq \p_\p \subset R_\p \text{ the unique maximal ideal, WE WILL DISCUSS THIS IN DETAIL NEXT TIME}
+\]
+We have
+\[
+Q \in \Ass_{R_\p} (M_\p) \neq \emptyset
+\]
+then
+\[
+\ann{M_\p} \subset Q
+\]
+therefore using $\p$ is minimal,
+\[
+\p \subset Q
+\]
+hence, by $p$ is a maximal ideal,
+\[
+Q = p
+\]
+by previous result,
+\[
+p\in \Ass(M)
+\]
+SO WE GOOD. \\
+Now we want to check  the last part about zerodivisors. 
+\[
+\p \in \Ass(M) 
+\]
+implies
+\[
+\p \in \ann{f}
+\]
+thus
+\[
+p \in \{\text{zerodivisors}\}
+\]
+Conversely, if $a\in R$ is a zerodivisor on $M$, then $a\in \ann{f_0}$ for some $0\neq f_0\in M$. Let $\ann{f}$ be maximal among annihilators containing $\ann{f_0}$:
+\[
+\ann{f_0}\subset \ann{f}
+\]
+By proof of Lemma before shows that $\p$ is prime, thus 
+\[
+a\in \p \in \Ass_R(M)
+\]
+
+\end{proof}
+\date{23.10.2018}
+\begin{lemma}
+$R$ noetherian, $M\neq 0$ f.g. $R$-module, $\p \subset R$ prime.
+\begin{enumerate}
+    \item A is $\p$-coprimary (i.e. $\Ass(M) = \{\p\}$)
+    \item $\ann{M} \subset \p$ (minimal) and $\{\text{zerodivisors on } M\} \subset \p$
+    \item $\rad(\ann{M}) \subset \p $ and $\{\text{zerodivisors on } M\} \subset \p$
+\end{enumerate}
+\end{lemma}
+\begin{proof}[$3 \Rightarrow 1.$]
+Since $M\neq 0$, it suffices to show for all $Q \in \Ass(M)$, that $Q = \p$. We know that 
+\[
+\{\text{zerodivisors on } M\}= \bigcup_{Q\in \Ass(M)} Q \subset \p
+\]
+and each such $Q$ contains $\ann{M}$.Therefore 
+\[
+P \supset Q \supset \rad(\ann{M}) \supset P
+\]
+implying $Q = P$.
+\end{proof}
+\section*{Primary Decomposition}
+Recall: An ideal $I \subsetneq R$ is \textbf{primary} if for $x,y\in R$, $x\notin I$, $xy\in I$ implies that $y^n\in I$ for some $n$. This is equivalent to 
+\[
+\{\text{zerodivisors on } \bigslant{R}{I}\} \text{ are nilponent in }\bigslant{R}{I}
+\]
+because suppose $I$ is primary. Then given a zerodivisor $x+I \in R/I$, which means it is non-zero in $R/I$, and there is another non-zero element $y+I \in R/I$ such that $(x+I)(y+I) = xy+I =0$, i.e. $xy\in I$. By primary, either $y\in I$ or $x^n \in I$, for some $n$, therefore $(x+I)^n = x^n+I = 0$ so $x+I$ is nilpotent in $R/I$. Conversely, if all zerodivisors on $R/I$ are nilpotent, then suppose $xy \in I$, then $(x+I)(y+I) = 0$ in $R/I$, which means both $x+I$ and $y+I$ are zerodivisors, thus they must be nilpotent in $R/I$, thus if $x\neq I$, then some power of $y$ is surely in $I$. So we can say primary is equivalent to: (notice that if $I$ is primary then $rad(I)$ is prime)
+\[
+\{\text{zerodivisors on } \bigslant{R}{I}\} = \p\coloneqq \rad(I) = \rad(\ann{\bigslant{R}{I}})
+\]
+Actually, we have
+\begin{prop}
+if $I$ is primary then $\rad(I)$ is the smallest prime ideal containing $I$.
+\end{prop}
+\begin{proof}
+A-M
+\end{proof}
+So we can say, for a primary ideal $I$ we say $I$ is \textbf{\boldsymbol{\p}-primary} if $\rad(I) = \p$.\\
+\begin{prop}
+for a prime $\p \subset R$, and any ideal $I\subset R$ 
+\[
+I \text{ is $\p$-primary as an ideal} \iff I\text{ is a $\p$-primary submodule of R}
+\]
+Recall: (maybe we haven't actually defined it yet? ) A submodule $N$ of a module $M$ is called $\p$-primary if $\Ass(M/N) = \{\p\}$.
+\end{prop}
+\begin{proof}
+Suppose $I$ is $\p$-primary as an ideal, which means $I$ is primary, and $\rad (I) = \p$. Now consider $R$ as a module over itself, and $I$ as a submodule. Consider $\Ass(R/I)$. We want to show $\Ass (R/I) =\{\p\}$. If $q\in \Ass (R/I)$, then $q = \ann{f}$ for some $0\neq f\in R/I$, thus for all $x\in \q$, $xf\in I$. Since $I$ is primary, and $f\notin I$, $x^n\in I$ for some power $n$. This means $q\subset \p = \rad(I)$. However, we must also have $\ann{R/I} = I \subset q = \ann{f}$ (if I can annihilate everything then I can in particular annihilate $f$, a particular element). Thus $I\subset q \subset \p$, but by previous proposition, $\p$ is the smallest prime ideal containing $I$, so in fact $q=p$.\\
+Conversely, suppose $I$ is a $\p$-primary submodule of $R$, i.e. $\Ass (R/I) = \{\p\}$. This means that there exists an element $0\neq f\in R/I$ such that $\ann{f} = \p$. So 
+\begin{equation}
+    \ann{R/I} = I \subset \p = \ann{f}
+\end{equation}
+Actually, a $\p$-primary submodule means that all the zerodivisors of $R/I$ are exactly $\p$, since if $x+I$ is a zerodivisor, then there exists $y$ such that $xy \in I$, thus by (4), $x\in \p$. On the other hand, if $z\in \p$, then $zf \in I$ so $z$ is a zerodivisor. So actually we have that
+\begin{equation}
+    
+\end{equation}
+\end{proof}
+\begin{definition}
+A submodule $S\subset M$ is called \textbf{irreducible} if it cannot be written 
+\[
+S = S_1 \cap S_2
+\]
+where $S \subsetneq S_j $, $S_j \subset M$ submodules.
+\end{definition}
+\begin{lemma}
+An irreducible submodule $S$ is either primary, or $S = M$.
+\end{lemma}
+\begin{proof}
+Let $S \subset M$ be an irreducible submodule. Assume $S \neq M$.\\
+We want to show:
+\[
+\#(\Ass(\bigslant{M}{S})) \leq 1
+\]
+which means
+\[
+\#(\Ass(\bigslant{M}{S})) = 1
+\]
+(because we showed earlier that the associated primes are non-empty).\\
+Assume contrary. Then there exist primes $\p_1,\p_2 \subset R$, such that
+\[
+\bigslant{R}{\p_1},\bigslant{R}{\p_2} \hookrightarrow M
+\]
+because we know, by proposition 47., that $\p$ being associated means that there is a submodule of $M$ isomorphic to $R/\p$. In other words, we have
+\[
+\bigslant{R}{\p_1} \cong S_1 \hookrightarrow M
+\]
+\[
+\bigslant{R}{\p_2} \cong S_2 \hookrightarrow M
+\]
+
+
+Now let 
+\[
+\bigslant{S_1}{S},\bigslant{S_2}{S} \hookrightarrow \bigslant{M}{S}
+\]
+denote their images (in particular note that $S_1,S_2$ are submodules of $M$ that contain $S$).
+\begin{claim}
+\[
+\bigslant{S_1}{S} \cap \bigslant{S_2}{S} = \{0\}
+\]
+\end{claim}
+PROOF OF CLAIM: Indeed, each nonzero element of $S_j/S$ has annihilator $\p_j$, and $\p_1 \neq \p_2$, whence the claim.\\
+Thus
+\[
+S_1\cap S_2 = S
+\]
+where
+\[
+S \subsetneq S_1,S_2
+\]
+contradicting irreducibility.
+\end{proof}
+\begin{prop}
+$R$ noetherian, M f.g. $R$-module. Any submodule $N\subset M$ may be written as a finite intersection of primary submodules. i.e.
+\[
+N = Q_1 \cap \dots \cap Q_n
+\]
+and each $Q_j$ is $\p_j$-primary submodule of $M$, where $\p_j\subset R$ prime.
+\end{prop}
+\begin{proof}
+We are going to do a ``downwards induction". By the above Lemma, it suffices to show, for all submodules $N\subset M$, that:
+\[
+\mathcal{H}(N)\text{ (``hypothesis") }: N \text{  is a finite intersection of irreducible submodule of }M
+\]
+We know that $\mathcal{H}(M)$ is true, because $M=M$ is irreducible.\\
+Given $N\neq M$, assume (this will be inductive hypothesis) that $\mathcal{H}(S)$ holds whenever 
+\[
+N\subsetneq S \subset M
+\]
+Then we make the following claim:
+\begin{claim}
+we must have $\mathcal{H}(N)$ to hold.
+\end{claim}
+PROOF OF CLAIM: $\mathcal{H}(N)$ is true if $N$ is irreducible (then $N=N$), else, we can write
+\[
+N = S_1 \cap S_2, N\subsetneq S_j \subset M
+\]
+Since $\mathcal{H}(S_1), \mathcal{H}(S_2)$ hold by assumption, we have
+\[
+S_1 = \bigcap_{finite} J_j, S_2 = \bigcap_{finite} K_k
+\]
+which are both finite intersections of irreducible submodules, so
+\[
+N = \left(\bigcap_{finite} J_j\right)\cap \left(\bigcap_{finite} K_k\right)
+\]
+which is still a finite intersection of irreducible submodules, thus $\mathcal{H}(N)$ holds. END OF PROOF OF CLAIM.\\
+Consider 
+\[
+N \in \{N: \mathcal{H}(N)\text{ false}\}
+\]
+Let $N$ be a maximal element (exists because $M$ is noetherian). Then $N\neq M$. But for all $S$ with 
+\[
+N \subsetneq S \subset M
+\]
+we have that $\mathcal{H}(S)$ holds by the maximality of $N$. using what was shown above, we get a contradiction. (This is an argument by ``Noetherian induction")
+\end{proof}
+\begin{lemma}
+If $Q_1,\dots ,Q_n \subset M$ are $\p$-primary submodules, then so is their intersection: $Q_1\cap \dots \cap Q_n$.
+\end{lemma}
+\begin{proof}
+By assumption we have 
+\[
+\Ass(\bigslant{M}{Q_j}) = \{\p\}
+\]
+for all $j$.\\
+Consider the injection
+\[
+\mappinj{\bigslant{M}{(Q_1\cap \dots \cap Q_n)}}{\bigoplus_{j=1,\dots, n} \bigslant{M}{Q_j}}{x}{(x,x,\dots, x)}
+\]
+then by the Corollary that says direct sums of modules has associated primes that are unions of the associated primes of the summands (Cor. 54), we have
+\[
+\Ass\left(\bigoplus_{j=1,\dots, n} \bigslant{M}{Q_j}\right) = \{\p\}
+\]
+now construct the following short exact sequence:
+\[
+0 \rightarrow \bigslant{M}{\cap_j Q_j} \hookrightarrow \bigoplus_{j=1,\dots, n} \bigslant{M}{Q_j} \twoheadrightarrow 
+\]
+thus 
+\[
+\Ass(\bigslant{M}{\cap Q_j}) = \{\p\}
+\]
+by Lemma that says 
+\[
+\Ass(M') \subset \Ass(M) \subset \dots
+\]
+\end{proof}
+\begin{remark}
+Primary decomposition of $N$: 
+\[
+N = Q_1 \cap \dots \cap Q_n \subset M 
+\]
+is in bijection with 
+\[
+\{0\} = \overline{Q_1} \cap \dots \cap \overline{Q_n} \subset \bigslant{M}{N}
+\]
+\end{remark}
+\begin{lemma}
+If $N = \bigcap Q_j \subset M$ is a primary decomposition, then denote $\{\p_j\} = \Ass(M/Q_j)$, then
+\[
+\{\p_1,\dots ,\p_n\} \supset \Ass(\bigslant{M}{N})
+\]
+By the Remark, we may assume $N = \{0\}$. Since $\{0\} = \bigcap Q_j$, we get 
+\[
+M \hookrightarrow \bigoplus \bigslant{M}{Q_j}
+\]
+thus 
+\[
+\Ass(M) \subset \{\p_j\}_j
+\]
+\end{lemma}
+\begin{definition}
+A \textbf{minimal primary decomposition (MPD)} $N = Q_1 \cap \dots \cap Q_n \subset M$ is one for which $n$ is minimal. In that case:
+\begin{enumerate}
+    \item $\p_i \neq \p_j$ for all $i\neq j$. Otherwise if $\p_i=\p_j$, then we can replace $Q_i,Q_j$ with $Q_i\cap Q_j$, which is $\p_i$-primary. 
+    \item None of the $Q_i$ are unnecessaey, i.e. for all $i$, 
+    \[
+    N \neq \bigcap_{j:j\neq i} Q_j
+    \]
+    (else we can delete $Q_i$ to get a smaller decomposition)
+\end{enumerate}
+It is clear that MPDs exist.
+\end{definition}
+QUESTION: Uniqueness of MPD?
+\begin{theorem}
+Let $N = Q_1 \cap \dots \cap Q_n \subset M$ be a MPD. Then 
+\[
+\{\p_1, \dots ,\p_n\} = \Ass(\bigslant{M}{N})
+\]
+Moreover, if $\p_i$ is an isolated prime, then $Q_i$ is uniquely determined by $N\subset M$.\\
+Finally, MPDs ``localize well", i.e. for all multiplicatively closed set $U\subset R$, if we relabel, and choose $t\leq n$ such that 
+\[
+\{\p_1,\dots ,\p_t\} = \{\p_j: \p_j\cap U = \emptyset\}
+\]
+(so that $\Ass(\left(\bigslant{M}{N}\right)[U^{-1}]) = \{\p_1,\dots ,\p_t\}$), then 
+\[
+N[U^{-1}] = Q_1[U^{-1}] \cap \dots \cap  Q_t[U^{-1}] \subset M[U^{-1}]
+\]
+is a MPD.
+\end{theorem}
+\begin{proof}
+We may assume $N = \{0\}$
+\begin{enumerate}
+    \item It suffices to show that for all $j$, that $\p_j \in \Ass(M)$. Since $Q_j$ is $\p_j$-primary, it suffices to find a nonzero submodule $S\subset M$ such that $S \hookrightarrow M/Q_j$ (Then $\Ass(M/Q_j) = \{\p_j\}$, so \Ass(S)=$\{\p_j\}$, so $\p_j\in \Ass(M)$ ). Try
+    \[
+    S \coloneqq \bigcap_{i: i\neq j} Q_i
+    \]
+    CHECK: then $S \neq 0$ (because $Q_j$ is not unnecessary). We have
+    \[\ker (S \rightarrow \bigslant{M}{Q_j}) = \bigcap_i Q_i = \{0\}
+    \]
+    \item Without loss of generality, $i=1$. Thus $\p_1$ is an isolated a.k.a minimal prime. It suffices to show 
+    \[
+    Q_1 = \ker (M \rightarrow M_{\p_1})
+    \]
+    because then $Q_1$ is obviously independent of the choice of MPD. Recall that
+    \[
+    M \hookrightarrow \bigoplus_i \bigslant{M}{Q_i}
+    \]
+    thus 
+    \[
+    M_{\p_1} \hookrightarrow \bigoplus_i \left(\bigslant{M}{Q_i}\right)_{\p_1}
+    \]
+    \begin{claim}
+    $\left(\bigslant{M}{Q_i}\right)_{\p_1} = \{0\}$ for all $i\neq 1$
+    \end{claim}
+    PROOF OF CLAIM: It suffices to show
+    \[
+    \Ass((\bigslant{M}{Q_i})_{\p_1}) = \emptyset
+    \]
+    for all $i\neq 1$. From a theorem from last week,
+    \[
+    \Ass((\bigslant{M}{Q_i})_{\p_1}) = \{\p \in \Ass(\bigslant{M}{Q_i}): \p\cap (R\setminus \p_1) =\emptyset\}= \begin{cases}
+    \{\p_i\} & \p_i \cap (R\setminus (\p_1)) = \emptyset \text{ i.e. } $\p_i \subset \p_1$\\
+    \emptyset & \p_i \not\subset \p_1
+    \end{cases}
+    \]
+    But $\p_1$ is minmal fo $\p_i \subset \p_1 \iff i=1$, whence the claim. Thus
+    COMMUTATIVE DIAGRAM
+    \item dont have enough time
+\end{enumerate}
+\end{proof}
+\subsection*{Examples of Prim Decom}
+\begin{enumerate}
+    \item $I = (x^2,xy) \subset k[x,y]$. Then
+    \begin{equation}
+        I = (x) \cap (x,y)^2 \coloneqq Q_1 \cap Q_2 = (x) \cap (x^2,y) \coloneqq Q_1' \cap Q_2' 
+    \end{equation}
+    We have the prime ideals
+    \[
+    P_1 = (x) = \rad(Q_1) = \rad(Q_1')
+    \]
+    and
+    \[
+    P_2 = (x,y) = \rad(Q_2) = \rad (Q_2')
+    \]
+    \begin{claim}
+    $Q_1,Q_1',Q_2,Q_2'$ are primary. For example, we need
+    \[
+    \text{in  }\quad \bigslant{k[x,y]}{(x^2,y)} \neq \{0\}\text{ every zerodivisor is nilpotent}
+    \]
+    \end{claim}
+    We also want to show the decomposition of (4) is 
+\end{enumerate}
+
+Recall a proposition we didn't prove:
+\begin{prop}
+For any module $M$,
+\[
+\Ass(M) = \bigcup_{0\neq f \in M}\{ \text{minimal primes of }\ann{f}\}
+\]
+\end{prop}
+\begin{proof}
+The $\subset $ inclusion is easy, since each $\p \in \Ass(M)$ is of the form $\p = \ann{f}$, for some $0\neq f \in M$.\\
+For the other inclusion, id $\p \supset \ann{f} = \ann{R\cdot f}$, then
+\[
+\p \in \Ass(R\cdot f) \subset \Ass(m)
+\]
+since
+\[
+R\cdot f \subset M
+\]
+\end{proof}
+\begin{definition}
+For $f\in M$, the \textbf{support} of $f$, is
+\[
+\supp(f)\coloneqq\{\p \in \spec{R}: \p \supset \ann{f}\}
+\]
+in fact
+\[
+\p \supset \ann{f} \iff 0\neq f_\p \in M_\p
+\]
+\end{definition}
+Recall: $\spec(R)$ admits the Zarisli topology, where closed sets are
+\[
+Z(I) = \{\p : \p\supset I\}
+\]
+for ideals $I \subset R$. Then we know that
+\[
+\supp(f) \subset \spec(R)
+\]
+is closed.\\
+\begin{definition}
+An \textbf{irreducible component} $z$ of a topological space $X$ is a maximal closed irreducible subset.
+\end{definition}
+Recall: $z$ is irreducible if $z\neq z_1 \cup z_2$ with $z_1,z_2 \subsetneq z$ proper closed subsets. 
+\begin{lemma}
+\[
+\{\text{irreducible components of }Z(I) \subset \spec{R}\} \longleftrightarrow \{\text{minimal primes }\p\supset I\}
+\]
+\[
+\spec{R} \supset \overline{\p} = \{Q: Q\supset \p\} \mapsfrom \p
+\]
+\end{lemma}
+\begin{lemma}
+Same argument we used to relate 
+\[
+\{\text{irreducible varieties}\} \longleftrightarrow \{\text{primes in } k[x_1,\dots, x_n]\}
+\]
+see A-M Ch.1 exercises.
+\end{lemma}
+\subsubsection*{Summary}
+\begin{align}
+    \Ass(M) &\Longleftrightarrow \bigcup_{0\neq f \in M}\{\text{irreducible components of }\supp(f)\}\\
+    \p &\mapsto \overline{\{\p\}}
+\end{align}
+
+\subsubsection*{example}
+Let $R = k[x,y]/(x^2,xy)$, and $M= R$. Take $1=f \in M$, then
+\[
+\ann{f} = \{0\} \subset R
+\]
+\[
+\{\text{minimal primes of }\ann{f}\} = \{\p_1\}
+\]
+where
+\[
+\p_1 = (x), \quad \p_2 =(x,y)
+\]
+If we choose instead $f=x$, then
+\[
+\ann{f} = (x,y)
+\]
+and
+\[
+\{\text{minimal primes of }\ann{f}\} = \{\p_2\}
+\]
+if we take $f=y$, then 
+\[
+\ann{f} = (x)
+\]
+and
+\[
+\{\text{minimal primes of }\ann{f}\} = \{\p_1\}
+\]
+\section*{Philosophy}
+Idea: identify (approximately) rings with ``functions" on ``spaces".
+\begin{eg}
+\begin{enumerate}
+    \item take $R=k[x_1,\dots,x_n] = \{\text{polynomials }f:k^n\rightarrow k\}$, $k=\overline{k}$
+    \item if $I$ is a radical ideal in $R$ as above ($\iff R/I$ reduced, i.e. nilradical $=\{0\}$), then
+    \[
+    \bigslant{R}{I} \cong \{\text{polynomial functions(restriction from $k^n$) }f:Z(I) \rightarrow k\}
+    \]
+\end{enumerate}
+\end{eg}
+How about for $I$ not radical?
+\begin{eg}
+\[
+I_n= (x^n) \subset k[x]
+\]
+\[
+I_1 \leftrightarrow 
+\]
+\end{eg}
+Q:
+For $f\in R$, how much do we know about $f$ if we can only look at the image $\overline{f}\in R/I$?\\
+For radical ideal, Answer: $f|_{Z(I)}$. \\
+For $I_1$, 
+
+\begin{eg}
+
+\end{eg}
+
+
+\section*{Integrality}
+\begin{theorem}[Cayley-Hamilton]
+Any $n\times n$ matrix $A$ is killed by its own characteristic polynomial.
+\end{theorem}
+\begin{proof}
+Take a basis $e_1,\dots ,e_n$. We can write
+\[
+Ae_i = \sum_j a_{ij} e_j
+\]
+In matrxi form:
+\[
+\begin{pmatrix}
+A-a_{11} & -a_{12}\\
+-a_{22} & A-a_{22}
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+e_1\\
+e_2
+\end{pmatrix}
+= 0
+\]
+For an $n\times n$ matrix $X$, with entries in any ring, recall
+\[
+\det(X) = \sum_{\sigma \in S_n} (-1)^\sigma c_{1,\sigma(1)} \dots c_{n,\sigma(n)}
+\]
+
+\end{proof}
+\begin{theorem}[Cayley-Hamilton]
+Let $R$ be a ring, $I\subset R$ an ideal, $M$ a module generated by $n$ elements: $e_1,\dots ,e_n$. Let $\phi \in \en{M}$ (an endomorphism is a homomorphism to itself) such that $\phi(M) \subset I \cdot M$. Then there exists a monic polynomial 
+\[
+f = x^n+a_1x^{n-1} + a_2x^{n-1}+\dots +a_n \in R[x]
+\]
+with $a_j \in I^j$. Such that
+\[
+f(\phi) = 0 \in \en{M} \quad \text{as the zero endomorphism}
+\]
+\[
+f(\phi) = \phi^n +a_1\phi^{n-1}+\dots = 0
+\]
+\end{theorem}
+\begin{proof}
+Since $e_1,\dots ,e_n$ is a finite set of generators of $M$, we may write the image of each of those under $\phi$, $\phi(e_i)$ in terms of these generators again, with coefficients in $I$ (since $\phi(M) = IM$):
+\begin{equation}
+\phi(e_i) = \sum a_{ij} e_j, \quad a_{ij} \in I
+\end{equation}
+
+We can regard $M$ as a module over the polynomial ring $R[x]$, by letting $x$ act as $\phi$. What this means is that, we define, for $p(x) = c_nx^n+\dots c_0 \in R[x]$, the action
+\[
+p(x) \cdot m \coloneqq c_n\phi^n(m)+\dots c_0m
+\]
+Now let $A$ be the $n\times n$ matrix with entries $a_{ij}$, and let $\mathds{1}$ be the $n\times n$ identity matrix. If we write
+\[
+e =
+\begin{pmatrix}
+e_1\\
+e_2\\
+\vdots \\
+e_n
+\end{pmatrix}
+\]
+then (9), together with considering $M$ as a module over $R[x]$, says the following:
+\begin{equation}
+(x \mathds{1}-A) \cdot e =0    
+\end{equation}
+because we have
+\[
+\begin{pmatrix}
+x & &\\
+& \ddots &\\
+& & x
+\end{pmatrix}
+\begin{pmatrix}
+e_1\\
+e_2\\
+\vdots\\
+e_n
+\end{pmatrix}
+=
+\begin{pmatrix}
+a_{11} & a_{12} &\dots\\
+a_{21} & \ddots&\\
+\vdots& & a_{nn}
+\end{pmatrix}
+\begin{pmatrix}
+e_1\\
+e_2\\
+\vdots\\
+e_n
+\end{pmatrix}
+\]
+multiplying out,  we have
+\[
+\begin{pmatrix}
+xe_1\\
+xe_2\\
+\vdots\\
+xe_n
+\end{pmatrix}
+=
+\begin{pmatrix}
+a_{11}e_1+a_{12}e_2 \dots\\
+a_{21}e_1+a_{22}e_2 \dots\\
+\vdots& & 
+\end{pmatrix}
+=
+\begin{pmatrix}
+\phi(e_1)\\
+\phi(e_2)\\
+\vdots\\
+\phi(e_n)
+\end{pmatrix}
+\]
+and identifying $\phi$ with $x$, we have (10). Multiplying the LHS of (10) by the matrix of cofactors of $x\mathds{1}-A$ (not sure what this means), we get
+\begin{equation}
+    [\det (x\mathds{1}-A)]\mathds{1}\cdot m = 0
+\end{equation}
+that is, $\det (x\mathds{1}-A)m_i =0$ for all $i$. Thus
+\begin{equation}
+    [\det (x\mathds{1}-A)]M =0
+\end{equation}
+it follows that the polynomial $f(x) = \det (x\mathds{1}-A)$ has the desired property of $f(\phi) =0$, and the $j$th coefficient is in the $j$th power of $I$.
+\end{proof}
+
+\begin{corollary}
+If $M$ is a f.g. free module over $R$, and $\phi \in \en{M}$ is surjective, then $\phi$ is an isomorphism.
+\end{corollary}
+\begin{proof}
+
+\end{proof}
+\date{30.10.2018}
+\begin{corollary}
+$M$ finitely generated module, and assumptions as the Theorem. Assume $IM = M$. ($IM\coloneqq$ module generated by the set $\{im:i\in I,m\in M\}$). Then there exists $i\in I$ such that $im = m$ for all $m\in M$. 
+\end{corollary}
+\begin{proof}
+Take $\phi = \id$ and use Cayley-Hamilton. Then
+\[
+\phi(M) = M \subset IM 
+\]
+Then there exists some monic polynomial such that
+\begin{equation}
+ \phi^n + a_1\phi^{n-1}+\dots + a_n = 0 \in \en{M}   
+\end{equation}
+
+where $a_j\in I^j\subset I$, $j\geq 1$. Take
+\[
+i \coloneqq -(a_1+\dots +a_n)
+\]
+then, evaluating (13) at any $m$, we have
+\[
+0 = m+a_1m+\dots+a_nm
+\]
+implying $im = m$.
+\end{proof}
+\begin{corollary}[Nakayama's Lemma]
+Let $(R,\p)$ be a local ring ($\p$ is the unique maximal ideal, thus $R^\times = R\setminus \p$), and $M$ a f.g. module. If $\p M = M$, then $M =\{0\}$, the zero module. Equivalently, if $M\neq \{0\}$, then $M/\p M \neq 0$ (because $\p M=M \iff M/\p M =\{0\}$).
+\end{corollary}
+\begin{proof}
+By previous result, there exists $i\in \p$ such that $im =m$ for all $m\in M$. Notice $im=m \iff (i-1)m = 0$. Then the existence of $i$ implies $i-1\notin \p$ (because $i\in \p$, so if $i-1 \in \p$, this would imply that $1\in \p$ so $\p$ is the whole ring which is not allowed), so $i-1\in R^\times$. So $(i-1)$ is a unit, therefore $(i-1)m=0$ must be equivalent to $m=0$ (unit cannot be zerodivisor), so we showed any element $m\in M$ is zero, thus $M= \{0\}$.
+\end{proof}
+\begin{corollary}
+Let $(R,\p)$ be a local ring, $M$ finitely generated module. Suppose $e_1,\dots,e_n \in M$ such that their images 
+\[
+\overline{e_1},\dots, \overline{e_n} \in \bigslant{M}{\p M} = \overline{M}
+\]
+generate $\overline{M}$ (as an $R$-module, or as an $R/\p$-module). Then $e_1, \dots ,e_n$ generate $M$
+\end{corollary}
+\begin{proof}
+Let $N \coloneqq \sum_{j=1}^n Re_j \subset M$ (this is the submodule of $M$ generated by the $e_i$'s). Let $K\coloneqq M/N$ (it is a finitely generated $R$-module, because $M$ is f.g.). Want to show $K = 0$ (which would imply $M=N$). By previous result, it suffices to show $\overline{K} = K/\p K = 0$. But
+\begin{equation}
+\bigslant{K}{\p K} \cong \bigslant{M}{N+\p M} \cong \bigslant{\overline{M}}{\overline{N}}  
+\end{equation}
+where
+\[
+\overline{N} = \bigslant{N}{\p N} = \sum_{j=1}^n R \overline{e_j}
+\]
+since our hypothesis says $\overline{M} = \sum_{j=1}^n R \overline{e_j}$ as well, (14) must equal the zero module. Thus $\overline{K} = 0$, and by Nakayama's Lemma, $K = M/N =\{0\}$, thus $N=M$, so $M$ is generated by $e_1,\dots, e_n$.
+\end{proof}
+\begin{remark}
+The previous two Corollaries hold more generally with $(R,\p)$ a local ring replaced by $(R,I)$, where $R$ is any ring, and $I = \Jac(R)$ (intersection of all the maximal ideals). Same proof: $i\in I$ implies $i-1 \notin m$ for all $m$, implying $i-1\in R^\ast$
+\end{remark}
+Let $S$ be an $R$-algebra. \\
+Recall: $S$ is a finitely generated $R$-algebra or is finitely generated as an $R$-algebra if there exists a surjective $R$-algebra map $R[x_1,\dots, x_n] \rightarrow S$. A slightly different thing is the following:
+\begin{definition}
+$S$ is a \textbf{finite \boldsymbol{R}-algebra} if $S$ is finitely generated as an $R$-module, i.e. there exits a surjective $R$-module map $R^n \rightarrow S$. 
+\end{definition}
+Note that a finite $R$-algebra is a finitely generated $R$-algebra.
+\begin{eg}
+$R=\z \hookrightarrow S = \z\left[\frac{1}{2}\right]$ f.g. $\z$-algebra. We see that 
+\[
+\z\left[\frac{1}{2}\right] \coloneqq \sum_{j\geq 0} 2^{-j}\cdot \z \quad \text{NOT a finite }\z\text{- module}
+\]
+\begin{proof}
+In any f.g. $\z$-submodule of $\z[\frac{1}{2}]$, the ``denominators" are bounded.
+\end{proof}
+\end{eg}
+\begin{theorem}
+Let $R$ be a ring. $J \subset R[x]$ ideal. Let $S \coloneqq R[x]/J$. Then
+\[
+S \text{ is a finite $R$-algebra over }R \iff \text{there exists a monic element in }J
+\]
+More precisely, $S$ can be generated as an $R$-module by $\leq n$ elements if and only if there exists
+
+\[
+f = x^n+\dots \in J
+\]
+a monic element of $J$ of degree $n$.\\
+If such an $f$ exists, then $1,\overline{x}, \dots, \overline{x}^{n-1}$ generate $S$ as an $R$-module. ($\star$)
+\end{theorem}
+\begin{proof}
+$(\Leftarrow)$ is easy: it suffices to show $(\star)$ holds, and for that, it suffices to show for all $m\geq 0$, that $\overline{x}^m \in \sum_{j=0}^{n-1}R\overline{x}^j \coloneqq N$. This is clear if $m<n$. If $m\geq n$, we may write
+\[
+x^m = x^{m-n}f + h
+\]
+where $\deg (h)< m$. Since $\overline{f} =0$ (image of $f$ in $S$), we get $\overline{x^m} = \overline{h}$. By induction on $m$, $\overline{h}\in N$.\\
+$(\Rightarrow)$\\
+Apply Cayley-Hamilton to $S$ (playing the role of $M$ in C-H),regarded as an $R$-module.  $I= R$. Define $\phi \in \End_R(S)$ by
+\[
+\phi(s) \coloneqq \overline{x}s
+\]
+Then C-H implies $\phi^n + \dots = 0$. Apply to $s\coloneqq 1 \in S$, then
+\[
+\overline{x}^n + \dots  = 0 \iff x^n + \dots \in J
+\]
+\end{proof}
+\begin{definition}
+Let $S$ be an $R$-algebra. An element $s\in S$ is called an \textbf{integral element (over \boldsymbol{R})} if there exists $F \in R[x]$ monic (i.e. $F = x^n + a_1x^{n-1} + \dots$, $a_j \in R$) such that $F(s) = 0$ i.e. $s^n + a_1s^{n-1}+\dots = 0$. $S$ is called \textbf{integral (over \boldsymbol{R})} if each $s\in S$ is an integral element.  
+\end{definition}
+\begin{eg}
+$R= \z$, $S = \cx$. Then
+\[
+\{s\in \cx: \text{integral over }\z\} = \{\text{algebraic integers}\}
+\]
+\end{eg}
+\begin{eg}
+$R = \z$, $S= $ any finite extension $K/\q$. Then
+\[
+O_k\coloneqq \{s\in K: \text{integral over }\z\} = \{\text{ring of integers in }K\}
+\]
+\end{eg}
+\begin{eg}
+$R = F \hookrightarrow S = K$ are fields. Then $\alpha \in K$ is integral over $F$ if and only if $\alpha$ is  $F$-algebraic. Also, $K$ is integral over $F$ if and only if $K$ is an algebraic field extension of $F$.
+\end{eg}
+\begin{exercise}
+Let $R$ be a unique facotrization domain, let $K = \Frac(R)$ (the fraction field). Then 
+\[
+\{s\in K: \text{integral over }R\} = R
+\]
+For example, take $R = \z$, $K = \q$. Then
+\[
+\{s\in \q: \text{integral over }\z\} = \z
+\]
+i.e. $O_\q = \z$
+\end{exercise}
+\begin{proof}
+Write $s = a/b$, where $a,b \in R$ with no common factor. Suppose $s$ is integral over $R$. Then we can write
+\[
+s^n+c_1s^{n-1}+\dots + c_n = 0 \quad c_j\in R
+\]
+Thus
+\begin{equation}
+a^n +c_1a^{n-1}b + \dots +c_nb^n =0
+\end{equation}
+If $b$ is not a unit, let $p|b$ be an irreducible factor. Then $(8)$ implies $p|a$, which is a contradiction. Thus $b\in R^\times$, so $s\in R$.
+\end{proof}
+\begin{theorem}
+Let $S$ be an $R$-algebra. Then $S$ is finite over $R$ (as an $R$-module) if and only if $S$ is generated as an $R$-algebra by finitely many elements that are integral over $R$.
+\end{theorem}
+\begin{remark}
+If $R = F \hookrightarrow S =K$ are fields, this says
+\[
+\bigslant{K}{F}\text{ is finite } (i.e. [K:F]<\infty)
+\]
+\[
+ \iff 
+\]
+\[
+K\text{ is generated as an $F$-algebra by finitely many algebraic elements}
+\]
+\end{remark}
+\begin{proof}
+$(\Rightarrow)$ Say $e_1,\dots e_n$ generate $S$ as an $R$-module, hence also as an $R$-algebra. Just need that each $\alpha \coloneqq e_j$ is integral over $R$. Apply C-H $(M \coloneqq S, I\coloneqq R)$ to $\phi \in \End_R(S)$, $\phi(s) = \alpha s$. Get
+\[
+\phi^n + \dots = 0
+\]
+Evaluate on $1\in S$ to get $\alpha^n + \dots = 0$ implying $\alpha$ integral over $R$.\\
+$(\Leftarrow)$\\
+Suppose $S$ is generated by $t_1,\dots , t_n$ as an $R$-algebra, with each $t_i$ integral over $R$. If $n=0$ the nwe are done because then $S=R$. If $n=1$ apply the previous result:
+\[
+R[x]\twoheadrightarrow S
+\]
+\[
+x \mapsto t_1
+\]
+get 
+\[
+0 \rightarrow J \rightarrow R[x] \twoheadrightarrow S \rightarrow 0
+\]
+so
+\[
+S = \bigslant{R[x]}{J}
+\]
+previous result implies 
+LAST PART MISSING
+\end{proof}
+\begin{lemma}
+Let $S$ be an $R$-algebra. Let $s\in S$. The following are equivalent:
+\begin{enumerate}
+    \item $s$ is integral over $R$
+    \item $R[s]$ is finite over $R$
+    \item there exists subring $T\subset S$ with $T \supset R[s]$ such that $T$ finite over $R$
+    \item there exists faithful $R[s]$-module $M$ such that $M$ finite over $R$.
+\end{enumerate}
+\end{lemma}
+\date{01.11.2018}
+\begin{theorem}
+Let $S$ be an $R$-algebra, then the set
+\[
+R'\coloneqq \{s\in S: s\text{ integral over }R\}
+\]
+is an $R$-subalgebra of $S$.
+\end{theorem}
+\begin{proof}
+So show $R\subset R'$. $s\in R$ stisfies $f(x) = x-s$. Need to check if $x,y \in R'$, then $x+y,xy \in R'$ (showing it is a subring). Set 
+\[
+T \coloneqq R[x,y]
+\]
+it is generated as an $R$-algebra by finitely many integral elements, namely $x$ and $y$, so by a Theorem from last time, we know $T$ is finite over $R$. Also, notice $xy\in T$. We may thus conclude via the equivalence $(i) \leftrightarrow(iii)$ of final Lemma from last time. Indeed, consider the module $M \coloneqq T$, and $\phi \in \End_R(M)$, defined by
+\[
+\phi(m) \coloneqq \alpha m
+\]
+where $\alpha = x+y$ or $xy$. Then by C-H, 
+\[
+\phi^n + a_1\phi^{n-1} + \dots = 0
+\]
+for $a_j \in R$ (hypothesis of C-H satisfied by finiteness of $T$). Evaluate on $1\in T$ we have 
+\[
+\alpha^n +a_1\alpha^{n-1} + \dots =0
+\]
+thus $\alpha$ is integral over $R$.
+\end{proof}
+\begin{definition}
+An $R$-module $M$ is \textbf{faithful} if the map
+\[
+\mapp{R}{\End(M)}{r}{[m\mapsto rm]}
+\]
+is injective. i.e. $r\neq 0 \Rightarrow $ there exists $m$ such that $rm \neq 0$. 
+\end{definition}
+\begin{definition}
+$R'$ as defined above is called the \textbf{integral closure of $R$ in $S$}.
+\end{definition}
+\begin{definition}
+An integral domain $R$ is called \textbf{integrally closed} or \textbf{normal} if $R$ is integrally closed in its fraction field $K = \Frac(R)$.
+\end{definition}
+Recall: $R$ integrally closed in $S$ $\iff$ $R'= \text{image of }R$.
+\begin{eg}
+We say last time that any UFD is integrally closed.
+\end{eg}
+\begin{lemma}
+If $R\hookrightarrow S \hookrightarrow T$ are ring maps, and $S$ is integral over $R$, and $T$ is integral over $S$, then $T$ is integral over $R$. (``integrality is transitive").
+\end{lemma}
+\begin{proof}
+Let $t\in T$, then by assumption 
+\[
+t^n+s_1t^{n-1}+\dots+s_n =0
+\]
+for $s_j\in S$. Thus $t$ is integral over the following ring:
+\[
+\tilde{R}\coloneqq R[s_1,\dots,s_n]
+\]
+Now $\tilde{R}$ is generated by finitely many elements that are integral over $R$, hence by Theorem from last time, $\tilde{R}$ is finite over $R$. $\tilde{R}[t]$ is finite over $\tilde{R}$, and $\tilde{R}$ is finite over $R$, these imply that $\tilde{R}[t]$ is finite over $R$, which implies that $t\in \tilde{R}[t]$ is integral over $R$.
+\end{proof}
+\begin{lemma}
+If $S$ is an integral over $R$, and $J \subset S$ is an ideal. Then $S/J$ is integral over $R/I$, where $I = R\cap J$ (preimage of $J$ in $R$).
+\end{lemma}
+\begin{proof}
+Note that there exists a natural map $R/I \rightarrow S/J$. Let $s+J \in S/J$. Then $s^n+a_1s^{n-1}+\dots = 0, a_j\in R$. Reduce this module $J$ to conclude that $s+j$ is likewise integral over $R/I$.
+\end{proof}
+\begin{lemma}
+$S$ integral over $R$, $U\subset R$ multiplicatively closed. Then $S[U^{-1}]$ is integral over $R[U^{-1}]$.
+\end{lemma}
+\begin{proof}
+Let $\frac{s}{u}\in S[U^{-1}]$, 
+\[
+s^n+a_1s^{n-1}+\dots =0,a_j \in R
+\]
+Then multiply $1/u^n$
+\[
+(\frac{s}{u})^n + \frac{a_1}{u}(\frac{s}{u})^{n+1}+ \dots + \frac{a_n}{u^n} = 0 
+\]
+
+\end{proof}
+\section*{Primes in Integral Extensions}
+\begin{remark}
+for all $S$ an $R$-algebra, which is by definition a ring homomorphism $j:R\rightarrow S$. Then 
+\[
+s\in S \text{ integral over }R \iff s \text{ is integral over }j(R)
+\]
+So basically everything we say about integral extensions reduces to the case the $R$ injects into $S$, $R\hookrightarrow S$. (what follows is my own interpretation that has not been verified) More specifically, since we can always restrict the homomorphism down to an injection, i.e. restricting $R$ down to a subring of $S$, we get the same integral elements? Need to ask this question.
+\end{remark}
+\begin{theorem}
+Let $S$ be an $R$-algebra. Assume that $S$ is integral over $R$. Assume $R\subset S$ and $R\neq 0$ (think of $R$ as a subring of $S$). This gives rise to a map
+\[
+\mapp{\spec(S)}{\spec(R)}{Q}{R\cap Q = R \cap j^{-1}(Q)}
+\]
+Then
+\begin{enumerate}
+    \item The above map is surjective.
+    \item Let $Q\in \spec(S)$ and let $P\coloneqq R\cap Q \in \spec(R)$. Then $Q$ is a maximal ideal if and only if $P$ is a maximal ideal.
+    \item The fibers (things of the form $\{Q: R\cap Q =P\}$, for some $P\in \spec(R)$) are incomparable. i.e. for all $P \in \spec(R)$, and for all $Q,Q' \in \spec(S)$, with $R\cap Q =P =R\cap Q'$, if $Q'\subset Q$, then $Q=Q'$.
+    \item (``Going Up Property") Let $ 1\leq m\leq n$. For all $P_1,\dots ,P_n \in \spec(R)$, for all $Q_1,\dots ,Q_m\in \spec(S)$ with $R \cap Q_j=P_j$ for all $j=1,\dots, m$ and $P_1\subset \dots \subset P_n$ and $Q_1\subset \dots \subset Q_m$ then there exists $Q_{m+1},\dots ,Q_n \in \spec(S)$, with $Q_1\subset \dots \subset Q_n$ such that $Q_j\cap R = P_j$ for all $j=1,\dots ,n$.
+\end{enumerate}
+\end{theorem}
+\begin{lemma}[special case of Part 2. of the Theorem with $P=0,Q=0$]
+Let $R\subset S$ be integral domains with $S$ integral over $R$. Then 
+\[
+R \text{ is a field} \iff S \text{ is a field} 
+\]
+\end{lemma}
+\begin{proof}
+$(\Rightarrow)$ Suppose $R$ is a field. Let $s\in S$, $s\neq 0$. By integrality we can write
+\begin{equation}
+s^n+a_1s^{n-1}+\dots+a_n = 0,\quad a_j\in R    
+\end{equation}
+We can choose $n$ minimally. Then we must have $a_n\neq 0$, otherwise we have 
+\[
+s\cdot (s^{n-1}+a_1s^{n-2}+\dots +a_{n-1}) =0
+\]
+but then $S$ being an integral domain, and $s\neq 0$, this implies $s^{n-1}+a_1s^{n-2}+\dots +a_{n-1} =0$, contradicting minimality of $n$. Also, $a_n \in R^\times \subset S^\times$ because $R$ is a field. Thus $a_n^{-1}$ exists. Now multiply $-a_n^{-1}$ to (16) to obtain
+\[
+-a_n^{-1}s^n-a_na_1s^{n-1}-\dots - 1=0
+\]
+rearranging we get
+\[
+s\cdot (-1)\cdot a_n^{-1}\cdot (s^{n-1}+a_1s^{n-2}+\dots + a_{n-1}) = 1
+\]
+This means everything to the right of $s$ is the inverse of $s$, therefore $s\in S^\times$, i.e. every element of $s$ has a multiplicative inverse, thus $S$ is a field.\\
+$(\Leftarrow)$ Assume $S$ a field. Let $r\in R$, $r\neq 0$. Set $s\coloneqq r^{-1} \in S$ (the inverse of $r$ in $S$). Again by integrality we can write
+\[
+s^n+a_1s^{n-1}+\dots+a_n = 0,\quad a_j\in R
+\]
+then after multiplying by $r^n$ we get
+\[
+1+a_1r + \dots + a_nr^n =0
+\]
+which we can rewrite as
+\[
+r\cdot (-a_1-a_2r-\dots -a_nr^{n-1}) =1
+\]
+thus $r\in R^\times$ because $(-a_1-a_2r-\dots -a_nr^{n-1})\in R$. So $r$ is an invertable element within $R$. Thus $R$ is a field.
+\end{proof}
+\begin{corollary}[\textbf{Part 2. of Theorem}]
+\[
+\bigslant{S}{Q} \supset \bigslant{R}{P}\quad \text{ is an integral extension of domains (why?)}
+\]
+$P$ is maximal if and only if $R/P$ is a field, if and only if $S/Q$ is a field, if and only if $Q$ is maximal ideal.
+\end{corollary}
+\subsubsection*{Part 1. of Theorem}
+\begin{proof}
+We are assuming $S$ is integral over $R$, and $P\in \spec(R)$. Then we can form the local ring $R_P$ which has maximal ideal $m\coloneqq P_P$. Note that $S_P$ (what is this again?) is integral over $R_P$. Thus there exits a maximal ideal $n$ of $S_P$. By Part 2. which we proved, $n\cap R_P$ is a maximal ideal of $R_P$, which is a local ring, therefore $n\cap R_P = m$. Set $Q \coloneqq n\cap S$. Then we get $Q\cap R = P$. See A-M Theorem 5.10 for better explanation, once I have time and effort I will fill in the commutative diagram needed.
+\end{proof}
+
+\subsubsection*{Part 3. of Theorem}
+We can form $R_P$, which has maximal ideal $m=P_P$. We have $S_P\supset R_P$. SEE PICTURE.
+
+\subsubsection*{Part 4. of Theorem}
+We may assume $n=2, m=1$ because we can iterate. SEE PICTURE
+
+\subsubsection*{Example of a Non-normal Domain}
+Let 
+\[
+R = \bigslant{\cx[x,y]}{(y^2-x^3)}
+\]
+call $I = (y^2-x^3)$. Let $X,Y$ be the images of $x,y$ respectively. Note: $R$ is a domain, since $y^2-x^3$ is irreducible. Consider the element $t \coloneqq \frac{Y}{X} \in K\coloneqq \Frac(R)$.
+\begin{claim}
+\begin{enumerate}
+    \item $t\notin R$
+    \item $t$ integral over $R$.
+\end{enumerate}
+\end{claim}
+which would imply $R$ is not normal. 
+PROOF OF CLAIM: 
+\begin{enumerate}
+    \item $t$ as a function on $Z(I)$ does not extend to a continuous function defined near $(0,0)$, but every element of $R$ does.
+    \item 
+\end{enumerate}
+\date{06.11.2018}
+\begin{definition}
+Let $k$ be a field, $R$ a $k$-algebra. A finite subset $\{x_1,\dots, x_n\} \subset R$ is called \textbf{algebraically independent (over \boldsymbol{k})} if it satisfies no nontrivial polynomial relations with coefficients in $k$. (think of it as an analog of linearly independent in vector spaces) Equivalently, the map 
+\[
+\mapping{\pi}{k[X_1,\dots ,X_n]}{R}{X_j}{x_j}
+\]
+where $k[X_1,\dots ,X_n]$ is a free polynomial ring over $k$, is injective.
+\end{definition}
+More generally, given any $x_1,\dots,x_n \in R$, an element $f\in \ker (\pi)$ is called a polynomial relation: $f(x_1,\dots, x_n) = 0$
+\begin{eg}
+$R = k[X_1,\dots,X_n]$, then $\{X_1,\dots,X_n \}$ is algebraically independent.
+\end{eg}
+\begin{eg}
+The subset $\{x^2,x^3\}\subset k[x]$ is NOT algebraically independent. Indeed, $(x^2)^3-(x^3)^2 =0$.
+\end{eg}
+\begin{eg}
+Suppose $K/k$ is an algebraic extension of fields, (algebraic means an integral extension of rings). Question: What are the algebraically independent (over $k$) subsets of $K$? (consider the case $K = \cx$ and $k=\r$) Answer: $\emptyset$ (there are non) Why? Any $\alpha \in K$ by hypothesis, satisfies a nontricial polynomial relation over $k$ (since it is an algebraic extension)
+\[
+\alpha^n + c_1\alpha^n + \dots = 0, \quad  c_j \in k
+\]
+Equivalently, the map
+\[
+\mapp{k[X]}{K}{X}{\alpha}
+\]
+contains $X^n +c_1X^{n-1}+\dots $ in its kernel.
+\end{eg}
+\begin{remark}
+The definition of algebraically independent also applies to infinite sets.
+\end{remark}
+\begin{definition}
+Let $E/k$ be an extension of fields. A subset $S\subset E$ is called a \textbf{transcendence basis (for \boldsymbol{E/k})} if the following are satisfied:
+\begin{enumerate}
+    \item $S$ is algebraically independent. We can then look at the field generated by $k\cup S$, denoted $k(S) \subset E$.
+    \item $E$ is an algebraic extension of $k(S)$.
+\end{enumerate}
+\end{definition}
+\begin{theorem}
+Suppose $E/k$ is a field extension. Then the following hold.
+\begin{enumerate}
+    \item Transcendence bases exist.
+    \item Given two transcendence bases $S,S'$, then $#S = #S'$. (``Swapping Lemma")
+    \item Given any $S\subset E$ with $k(S) = E$, and any maximal algebraically independent subset $S_0\subset S$, one has:
+ $S_0$ is a transcendence basis.
+\end{enumerate}
+\end{theorem}
+Reference: Lang's \textit{Algebra}.\\
+Part 2. of the Theorem motivates the following definition.
+\begin{definition}
+The \textbf{transcendence degree (of \boldsymbol{E/k})} is 
+\[
+\trdeg (E/k) \coloneqq \card(S)
+\]
+where $S$ is any transcendent basis.
+\end{definition}
+\subsubsection*{Proof of Part 3. of the Theorem, when \boldsymbol{S =\{x_1,\dots ,x_n\}} a finite set}
+In this case, after relabeling, say
+\[
+S_0 =\{x_1,\dots, x_t\}, 0\leq t \leq n
+\]
+Need to check: $E $ algebraic over $k(S_0)$. It suffices to show, for all $t+1\leq j \leq n$, that $x_j$ is algebraic over $k(S_0)= k(x_1,\dots,x_t)$. This is because we assume that $k(S) = E$, so every element of $E$ is generated by $S$; for any element (generator) $y\in S_0 \subset S$, the algebraic independence trivially implies that $y$ is algebraic over $k(S_0)$, so we just need to check for generators that are in $S\setminus S_0$. Observe that the maximality of $S_0$ implies that $\{x_1,\dots,x_t,x_j\}$ is algebraically dependent. Therefore we can find a non-trivial polynomial relation (with coefficients in $k$) satisfied by this set, and this relation must involve $x_j$, since $\{x_1,\dots ,x_t\}$ are algebraically independent. Therefore, we have found a non-trivial polynomial with coefficients in $k(S_0)$ that is satisfied by $x_j$. Thus $x_j$ is algebraic over $k(S_0)$.
+\begin{eg}
+$\trdeg(\r/\q) = \infty$. Also, $\trdeg(\cx/\q) = \infty$.
+\end{eg}
+Recall that we reduced the proof of the NS to that of 
+\begin{lemma}[Zariski's Lemma]
+Let $\Omega/k$ be a field extension with $\Omega$ being a finitely generated $k$-algebra. (If $k= \overline{k}$, then $\Omega = k$). Then 
+\[
+[\Omega:k] < \infty
+\]
+i.e. a finite field extension.
+\end{lemma}
+\begin{lemma}[Sublemma 1.]
+Let $0\neq f \in k[x]$. Then there exists a finite field extension $L/k$, and $\alpha \in L$ such that $f(\alpha)\neq 0$.
+\end{lemma}
+\begin{proof}
+Just take $\alpha \in \overline{k}$ such that $f(\alpha) \neq 0$, and let $L \coloneqq k(\alpha)$.
+\end{proof}
+\begin{lemma}[Sublemma 2.]
+Let $0\neq f \in k[x_1,\dots, x_n], n\geq 1$. Then there exists a finite field extension $L/ k$, and $\{\alpha_n\} \in L $ such that $f((\alpha_i)) \neq 0$. 
+\end{lemma}
+
+\begin{proof}
+as above.
+\end{proof}
+\begin{lemma}[Sublemma 3.]
+For $n\geq 1$ and $0\neq f\in k[x_1,\dots ,x_n]$, the ring $R= k[x_1,\dots, x_n, \frac{1}{f}]$ is NOT a field.
+\end{lemma}
+\begin{proof}
+If $R$ were a field, then choosing $L, \alpha$ as above, we get an injective map (look at the kernel, it must only contain the zero polynomial) of $k$-algebras
+\[
+\mapp{R}{L}{x_n}{\alpha_n}
+\]
+\[
+\frac{1}{f} \mapsto \frac{1}{f(\alpha)}
+\]
+But $\dim_k(L) < \infty = \dim_k(R)$ (why infinte?), which is a contradiction to the injection.
+\end{proof}
+\begin{proof}
+(another proof given in Eis. Section 4.6)
+\end{proof}
+\begin{lemma}[Sublemma 4.]
+Let $\Omega $ be a field, $R\subset \Omega$ a subring, such that
+\begin{enumerate}
+    \item $\Omega$ is algebraic over $K \coloneqq \Frac(R)$.
+    \item $\Omega$ is finitely generated $R$-algebra.
+\end{enumerate}
+Then there exists $0\neq f \in R$ such that $\Omega$ is finite over $R[f^{-1}]$.
+\end{lemma}
+\begin{proof}
+Suppose $x_1,\dots ,x_n \in \Omega$ generate $\Omega$ as an $R$-algebra. Thus for all $j= 1,\dots ,n$, using the assumption that $\Omega$ is algebraic over $K$,
+\[
+x_j^N + c_{j,1}x_j^{N-1}+\dots +c_{j,N} =0 , \quad c_{j,k} \in K
+\]
+Clearing denominators, meaning we can first write $c_{j,k}$ as $\frac{a_{j,k}}{b_{j,k}}$, $a_{j,k},b_{j,k} \in R$ (since these coefficients are in the fraction field), then multiplying out the denominators, we get
+\begin{equation}
+ \lambda_j x_j^N + \dots =0   
+\end{equation}
+where $\lambda_j$ and other coefficients are all in $R$ and $\lambda_j \neq 0$. (17) implies that $x_j$ is integral over $R[\lambda_j^{-1}]$ (divide (17) by $\lambda_j$ to get a monic relation over $R[\lambda_j^{-1}]$). Now set 
+\[
+f\coloneqq \lambda_1\dots  \lambda_n
+\]
+Then $R[\lambda_j^{-1}] \subset R[f^{-1}]$ for all $j$. This inclusion is true because all the $\lambda$'s are in $R$, so if we take $\frac{r}{\lambda_j} \in R[\lambda_j^{-1}]$, then
+\[
+\frac{r}{\lambda_j} \sim \frac{r\prod_{i\neq j} \lambda_i}{\lambda_j  \prod_{i\neq j} \lambda_i} \quad \text{ in }R[f^{-1}]
+\]
+
+
+
+Then each $x_j$ is integral over $R[f^{-1}]$ thus $\Omega$ is finite over $R[f^{-1}]$.
+\end{proof}
+\subsubsection*{Proof #1 of Zariski's Lemma}
+$\Omega$ is a finitely generated $k$-algebra, hence is finitely generated as a field extension of $k$, so it has a finite transcendence basis $\{x_1,\dots, x_n\}$ over $k$. Let $R\coloneqq k[x_1,\dots, x_n]$, $K\coloneqq \Frac(R) = k(x_1,\dots, x_n)$. Then $\Omega$ is algebraic over $K$. Also, $\Omega $ is finitely generated as a $k$-algebra hence also as an $R$-algebra.\\
+We want: $n=0$, so that $K=k$ because then $\Omega$ is algebraic over $k$ and finitely generated over $k$, so is finite over $k$. Assume otherwise, that $n\geq 1$. Sublemma 4. implies that there exists $0\neq f \in R$ such that $\Omega$ finite over $R[f^{-1}]$ implying integral. By result from last time, $R[f^{-1}]$ is then a field, contrary to the result of Sublemma 3.\\
+The concludes Proof #1.\\
+\subsubsection*{Proof #2 of Zariski's Lemma}
+It uses the following result:
+\begin{lemma}[Noether Normalization Lemma]
+Let $R$ be an integral domain that is finitely generated as a $k$-algebra, $k$ any field. Set $K \coloneqq \Frac(R)$, and $n\coloneqq \trdeg(K/k)< \infty$. Then there exits a transcendence basis $\{x_1,\dots, x_n\}$ for $K/k$ such that 
+\begin{enumerate}
+    \item each $x_j \in R$
+    \item $R$ is finite over $k[x_1,\dots, x_n]$
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Let $x_1,\dots , x_m$ any set of generators for $R$ as a $k$-algebra. Then $m\geq n$. Also, we get
+\[
+\bigslant{k[X_1,\dots, X_m]}{Q} \cong R
+\]
+Here 
+\[
+Q \coloneqq \ker \left(\mapp{k[X_1,\dots,X_m]}{R}{X_j}{x_j}\right)
+\]
+If $m=n$, then $\{x_1,\dots , x_m\}$ is algebraically independent, so $Q = (0)$, so conclusion holds. We can now induct on $m\geq n+1$ (fix $n$)\\
+Goal: Find $y_1,\dots y_{m-1} \in R$ such that 
+\begin{enumerate}
+    \item $R = k[y_1,\dots, y_{m-1},x_m]$
+    \item $x_m$ integral over $k[y_1,\dots,y_{m-1}] \coloneqq S$
+\end{enumerate}
+These imply $R$ is integral over $S$. We may apply induction hypothesis to $S$. Note: $\trdeg (\Frac(R)/k) = \trdeg(\Frac(S)/k)$. i.e. 
+\begin{align*}
+    R = k[x_1,&\dots, x_m]\\
+    &| \quad finite\\
+    k[y_1,&\dots, y_{m-1}]\\
+    &|\\
+    (&\dots)\\
+    &|\\
+    S_0\coloneqq k[z_1,&\dots, z_n]
+\end{align*}
+i stopped here cause I was too lost.
+\end{proof}
+Why does this imply Zariski's Lemma?\\
+Let $\Omega , k$ as in Zariski's Lemma. Apply NNL to $R \coloneqq \Omega$. Then $\Omega $ is finite over $S\coloneq k[x_1,\dots, x_n]$ (free polynomial ring). Thus $S $ is a field. But this is nonsense unless $n=0$. Then $S=k$. Thus $[\Omega:k] < \infty$. 
+
+\date{08.11.2018}
+End of the proof of NNL. Needed to check:\\
+if $R$ is an integral domain and a $k$-algebra, with $m$ generators $x_1,\dots, x_m$ satisfying some relation, i.e., such that 
+\[
+Q\coloneqq \ker(k[X_1\dots, \dots Xm]\twoheadrightarrow R, X_j\mapsto x_j)
+\]
+wanted to produce $y_1,\dots, y_{m-1} \in R$ such that $R$ is integral (finite) over $S \coloneqq k[y_1,\dots, y_{m-1}]$.\\
+Take $y_{j} \coloneqq x_j-x_m^{e_j}$ where $e>>> e_2>>> \dots >>> e_m>>> 1$.
+\begin{claim}
+$x_m$ is integral over $S$. Thus $x_j = y_j+x_m^{e_j}$ integral over $S$. Thus $R$ integral over $S$.
+\end{claim}
+\begin{proof}
+Let $0\neq f \in Q$. Then 
+\[
+f(x_1,\dots, x_{m-1},x_m) = f(y_1+x_m^{e_1},\dots, y_{m-1}+x_m^{e_{m-1}},x_m) = 0
+\]
+This gives an equation of the form
+\[
+c_0x_m^N + c_1x_m^{N-1}+\dots = 0, \quad c_j\in S, \quad c_0\in k^\times
+\]
+\begin{eg}
+m= 2 , $f(x_1,x_2)=x_1x_2-1$, 
+\[
+f(y_1+x_2^{e_1},x_2) = (y_1+x_2^{e_1}x_2-1) = x_2^{e_1+1}+y_1x_2-1
+\]
+If $e_1 \geq 1$, then this shows that $x_2$ is integral over $k[y_1]$.
+\end{eg}
+To make this work in general, set
+\[
+l\coloneqq \max \{i_1+\dots + i_m : \text{ the monomial $x_1^{i_1}\dots x_m^{i_m}$ occurs in }f\}
+\]
+and set
+\[
+e_j \coloneqq (l+1)^{m-j+1}
+\]
+\end{proof}
+Note: if $k$ is an infinite field, then one can instead choose 
+\[
+y_j = x_j-c_jx_m, \quad 1\leq j\leq m-1
+\]
+for suitable $c_1,\dots ,c_{m-1}\in k $. Because then, 
+\[
+0 = f(x_1,\dots,x_m) = f(y_1+c_1x_m,\dots, y_{m-1}+c_{m-1}x_m,x_m) = \lambda x^N + (\dots)
+\]
+where $0\neq \lambda\in k[c_1,\dots, c_{m-1}]$, and $(\dots)$ have coefficients in $S[c_1,\dots, c_{m-1}]$. Thus if $k$ is infinte, there exists $c_1,\dots, c_{m-1}$ at which $\lambda$ is nonzero. This choice implies that $x_m$ integral over $S$.
+\begin{eg}
+$f(x_1,x_2) = x_1x_2-1$, $y_1=x_1-cx_2$,
+\[
+0 = f =(y_1-cx_2)x_2 - 1 = -cx_2^2 + y_1x_2 -1
+\]
+If $c\neq 0 $, then $x_2$ integral over $k[y_1]$.
+\end{eg}
+\begin{remark}
+One can interpret (2nd proof) $(x_1,\dots, x_n) \mapsto (y_1,\dots, y_{m-1})$ as a linear projection
+\[
+V(Q) \subset k^m \twoheadrightarrow k^{m-1}
+\]
+if chosen generically, defines a finite map 
+\[
+V(Q) \rightarrow k^{m-1}
+\]
+See Eis., where it talks about NNL.
+\end{remark}
+\subsubsection*{Proof #3 of NL}
+\begin{definition}
+A ring $R$ is called a \textbf{Jacobson ring} if every prime is an intersection of maximal ideals. Equivalently, for all primes $\p \subset R$, 
+\[
+\p = \bigcap_{\text{maximal }m\supset \p} m
+\]
+Equivalently, 
+\[
+\Jac (\bigslant{R}{\p}) = (0) 
+\]
+for all primes $\p$.
+\end{definition}
+\begin{theorem}
+Let $R$ be Jacobson, and $S$ a finitely generated $R$-algebra. Then $S$ is Jacobson, and for all $n \subset S$ maximal, the ideal $m\coloneqq R \cap n$ is maximal, and $S/n$ is a finite field extension of $R/m$.
+\end{theorem}
+This implies Zariski's Lemma: If $R = k$ is a field, then $R $ is Jacobson. If $\Omega$ is finitely generated $k$-algebra and is a field, then the above Theorem implies that $\Omega$ is Jacobson, and that
+\[
+\Omega = \bigslant{\Omega}{(0)} \text{ is finite extension of }k/(0) = k
+\]
+\begin{definition} [only for this lecture]
+Let $R$ be an integral domain, call $R$ \textbf{bad} if 
+\begin{enumerate}
+    \item $R$ is not a field
+    \item there exists $0\neq f \in R$ such that $R[f^{-1}]$ is a field.
+\end{enumerate}
+$R$ is called \textbf{good} otherwise. 
+\end{definition}
+We saw last time that $k[x_1,\dots, x_n]$ is good (one of the sublemmas).
+\begin{lemma}
+Let $R$ be any ring. Then $R$ is Jacobson if and only if for all prime $\p$, $R/\p$ is good.
+\end{lemma}
+\begin{proof}
+CLAIM 1.: Let $R$ be a domain. If $\Jac (R) = (0)$ , then $R$ is good.\\
+PROOF OF CLAIM 1.: If $R$ is a field, then we are done since fields are good. Suppose $R$ is not a field, and that there exists $0\neq f \in R$ such that $R[f^{-1}]$ is a field. So the only ideals in this thing are the zero ideal and the whole thing. Then $(0)$ is the only prime of $R$ that does not contain $f$. Thus in particular $f\in \p$ for all nonzero prime $\p$. Let $m\subset R$ be a maximal ideal. Then $m\neq 0$, since we assume $R $ not a field. Thus $m$ is a nonzero prime, so $f\in m$. Thus $f\in \bigcap m = \Jac (R) = (0)$, a contradiction.  \\
+CLAIM 2.: If $\Jac(R) \neq (0)$, then there exists a prime $\p \subset R$ such that $R/\p$ is bad.\\
+PROOF OF CLAIM 2.: Let $R$ be a domain. Let $0\neq f \in \Jac(R)$. Let $Q \subset R[f^{-1}]$ be a maximal ideal. Then $Q$ corresponds to a $\p \subset R$ with $f\notin \p$. Define $0\neq \overline{f} \in R/\p$ to be the image of $f$. Then
+\[
+(\bigslant{R}{\p})[f^{-1}] \cong \bigslant{R[f^{-1}]}{Q}
+\]
+is a field. Moreover, $\p$ is not maximal, because $f\notin \p$, $f\in \Jac(R)$, so $R/\p$ is not a field, so $R/\p$ is bad.\\
+PROOF OF LEMMA: $(\Rightarrow)$ If $R$ is Jacobson and $\p $ prime, then by definition, $\Jac(R/\p) = (0)$, so by Claim 1., $R/\p$ is good.\\
+$(\Leftarrow)$ If $R$ is not Jacobson, then there exists $\p$, such that $\Jac(R/\p) \neq (0)$, so by Claim 2., there exists a prime $\overline{Q} \subset R/\p$ such that $(R/\p)/\overline{Q}$ is bad. Write $\overline{Q} = Q/\p$ for some prime $Q$ of $R$. Then 
+\[
+\bigslant{R}{Q} \cong \bigslant{\bigslant{R}{P}}{\overline{Q}} \quad \text{which is bad}
+\]
+a contradiction.
+\end{proof}
+\begin{lemma}
+Let $R$ be a Jacobson domain, and $S = R[x]/J$ for some prime $J\subset R[x]$. Then $S$ is good. Moreover, if $S$ is a field, then $R$ is a field, and $S$ is a finite extension over $R$.
+\end{lemma}
+\begin{proof}
+Suppose first that $S$ is a field (thus $S$ is good). Then $J \neq (0)$ since in the polynomial ring $R[x]$ we have $(x) \neq (0)$. Set $K \coloneqq \Frac(R)$, $R\subset S$, so $K \subset S$. S is a finitely generated as an $R$-algebra, hence also finitely generated as a $K$-algebra. In fact, $S$ is finite over $K$ because the generator $\overline{x} \coloneqq \text{ image of }x$, satisfies $f(\overline{x}) = 0$ if $0\neq f \in J$. By Sublemma 4. of last time, with $S = \Omega$, we get that there exists $0 \neq g \in R$ such that $S$ is finite over $R[g^{-1}]$. This implies that $R[g^{-1}]$ is a field so since $R$ good, we have $R$ field implying $R = R[g^{-1}]$ impluing $S$ finite fiwld extension of $R$.\\
+
+Suppose $S$ is not a field. We want that $S[f^{-1}]$ not a field for all $0\neq f \in S$. For the case $J = (0)$, $S[f^{-1}] = R[x,f^{-1}]$. If $S[f^{-1}]$ were a field, then since $R\subset S[f^{-1}]$, also $K\subset S[f^{-1}$ so $S[f^{-1}] = K[x, f^{-1}]$, a contadiction.\\
+For the case $J\neq (0)$. If $S[f^{-1}]$ were a field, then $K \subset S[f^{-1}] \coloneqq \Omega$. And $\Omega = R[\overline{x}, f^{-1}]$ finitely generated as an $R$-algebra, finite over $K$ (smae oriif as in the case that $S$ a field) therefore as before $\Omega $ is finite over $R[g^{-1}]$ for some $0\neq g\in R$ so $R[g^{-1}]$ field and by $R $ good, $R$ is a field. But then $S[f^{-1}]$ is finite over $K = R$ thus $S$ finite over $R$, implying $S$ a field, a contradiction. Alternatively, $J$ is nonzero prime in $R[x]=K[x]$, so $J$ is maximal, so $S$ a field.
+\end{proof}
+\begin{proof}
+PROOF OF THEOREM:
+The above Lemma implies the Theorem: If $R$ is Jacobson, then trivially implies that any quotient of $R$ is Jacobson. Since any finitely generated $R$-algebra is of the form
+\[
+S = \bigslant{R[x_1,\dots, x_n]}{J}
+\]
+it suffices to consider the case $S=R[x]$. WANT: $S/Q$ to be good. Set $P \coloneqq R \cap Q$. Then $R/P$ is good because $R$ is Jacobson, and Lemma 114 applies to 
+\[
+\bigslant{R}{P} \rightarrow \bigslant{S}{Q}
+\]
+Implying $S/Q$ good.\\
+Also, if $Q$ is maximal, then $S/Q$ a field, so Lemma 114 implies $R/P$ a field $\LeftRightarrow$ $P$ maximal , and $S/Q$ finite over $R/P$. This gives the consludions of the Theorem.
+\end{proof}
+\section*{Artin-Rees + Applications}
+Let $R$ be a ring, $I$ an ideal. $M$ a module. The \textbf{I-adic topology on \boldsymbol{M}} is that for which a base at $f\in M$ is given by the sets $f+ I^nM$, $n = 1,2,3,\dots$. Thus for $f,g\in M$, $f $ is close to $g$ I-adically, if and only if $f-g \in I^nM$ for some ``large" n.
+\begin{eg}
+$M=R=\z$, $I = \q$
+\end{eg}
+\begin{eg}
+$M=R=k[x]$, $I = (x-\alpha)$
+\end{eg}
+\date{13.11.2018}
+\begin{lemma}[Artin-Rees]
+Let $R$ be Noetherian, $I\subset R$ ideal. $M$ finitely generated module, $N\subset M$ submodule. Then 
+\[
+I^k(I^nM \cap N) = I^{n+k}M\cap N\quad \forall n\geq n_0 (\text{ depends on $M,N,I$}),k\geq 0
+\]
+Note: It suffices to treat the case $k=1$, because we repeat the identity $k$ times with larger values of $n$.
+\end{lemma}
+\begin{proof}
+Define
+\[
+M_n \coloneqq I^nM, \quad N_n \coloneqq N \cap M_n
+\]
+WANT: $IN_n = N_{n+1}$ for $n\geq n_0$. Define 
+\[
+R^\star \coloneqq R \oplus I \oplus I^2 \oplus I^3 \oplus \dots = \bigoplus_{k\geq 0} I^k
+\]
+
+We need to define how to multiply elements: for $x\in I^{k_1}, y\in I^{k_2}$ then $xy \coloneqq $ the product taken to lie inside $I^{k_1+k_2}$ (then extend this to the sum). In general, for $(x_n)_n, (y_n)_n \in R^\star$, then
+\[
+xy = (x_0y_0, x_0y_1+x_1y_0, x_0y_2+x_1y_1+x_2y_0, \dots)
+\]
+Similarly, define 
+\[
+M^\star \coloneqq M_0\oplus M_1 \oplus \dots
+\]
+and
+\[
+N^\star \coloneqq N_0\oplus N_1 \oplus \dots
+\]
+we can regard these as $R^\star $-modules, where for $(x_n)_n \in R^\star$, $(m_n)_n\in M^\star$. 
+\[
+xm = (x_0m_0, x_1m_0+x_0m_1, \dots)
+\]
+and smililarly for $N$. This makes sense because $I^k M_n \subset M_{n+k}$, $I^kN_n$. \\
+NOTE: $R^\star$ is a f.g. $R$-algebra: if $e_1,\dots, e_n$ are generators of $I$, then their image in $I\subset R^\star$, $x \mapsto (0,x,0,0,\sots)$ generate $R^\star$ as an $R$-algebra Why?
+
+
+
+\end{proof}
+\begin{remark}
+A-R Lemma valid more generally: if $R$ is a ring, $I$ and ideal, $M$ a module, then an \textbf{\boldsymbol{I}-filtration} on $M$ is a sequence of submodules $M = M_0 \supset M_1\supset M_2 \supset \dots$ such that $IM_n \subset M_{n_1}$ for all $n\geq 0$. This $I$-filtration is called \textbf{stable} if $IM_n = M_{n+1}$ for all $n\geq n_0$.
+\end{remark}
+\begin{theorem}[General A-R Lemma]
+$R$ Noetherian, $M$ f.g., $I $ ideal, $(M_n)_{n\geq0}$ a stable $I$-filtration, $N\subset M$ submodule. Then
+\[
+N_n \coloneqq N\cap M_n
+\]
+is a stable $I$-filtration.
+\end{theorem}
+\subsubsection*{Example of a non-stable \boldsymbol{I}-filtration}
+$R = \z$, $I = (2)$, $M = \z e_1 \oplus \z e_2 = \z^2$, $M_n = 2^n\z e_1 \oplus 2^{n+1} \z e_2$ is a stable $I$-filtration.
+
+\begin{remark}
+Any tow stable $I$-filtrations 
+\[
+M = M_0 \supset M_1 \supset \dots
+\]
+\[
+M' = M_0' \supset M_1' \supset \dots
+\]
+have ``bounded difference": $M_n \supset M_{n+\delta }'$, and $M_n' \supset M_{n+\delta}$ for $n\geq n_0$, $\delta $ fixed.
+\end{remark}
+\subsection*{Why do we care about A-R? }
+\begin{corollary}[Krull Intersection Theorem]
+Let $R$ be Noetherian, $I\subset R$ ideal, $M$ f.g. module, $N \coloneqq \bigcap_{n\geq 1}I^nM$ a submodule. Then $IN=N$.
+\end{corollary}
+\begin{proof}
+Choose $n_0$ as in Artin-Rees. Then we can write 
+\[
+N = I^{n_0}M \cap N = I^{n_0}M\cap N
+\]
+apply Artin-Rees to get
+\[
+IN = I^{n_0+1}M \cap N
+\]
+implying
+\[
+IN = N
+\]
+\end{proof}
+This is useful because:
+\begin{enumerate}
+    \item By Nakayama, we deduce that there exists $i$ for all $n$ such that $in=n$.
+    \item if $i\in I$, then $i-1$ is nonzerodivisor, then deduce that $n=0$ for all $n$, so $N=0$.
+\end{enumerate}
+\begin{corollary}
+Let $R,M,I,N$ as in the Krull Intersection Theorem, then
+\begin{enumerate}
+    \item if $R$ is an integral domain and $I\neq  (1)$, then 
+    \[
+    \bigcap I^n = (0)
+    \]
+    since $M=R$, $N=\bigcap I^n$
+    \item if $R$ is a local ring, and $I\neq (1)$, then
+    \[
+    \bigcap I^nM =0
+    \]
+    using $i-1 \in \r^\times$, and the previous identity.
+\end{enumerate}
+\end{corollary}
+\begin{definition}
+Let $R,M,I$ be ring, module, ideal. Recall we can define the I-adic topology on M. The \textbf{completion} of $M$ (with respect to $I$) is
+\[
+\hat{M} \coloneqq \lim_{\leftarrow_{n\geq 1}} \bigslant{M}{I^nM} = \{(x_n)_{n\geq 1}: x_n\in \bigslant{M}{I^nM}, x_m \equiv x_n (\mod I^nM) \quad  \forall m\geq n\} \subset \prod_{n\geq 1} \bigslant{M}{I^nM}
+\]
+this set is an $R$-module. We also always get a map
+\[
+\mapping{j}{M}{\hat{M}}{x}{(x_n)}
+\]
+where $x_n \coloneqq$ image of $x$ for all $n$.
+\end{definition}
+\begin{corollary}
+If $R$ is a local, Noetherian ring, $I \neq (1)$, and $M$ finitely generated. Then the map $j:M\rightarrow \hat{M}$ is injective.
+
+\end{corollary}
+\begin{proof}
+Indeed, $\ker(j) = \bigcap I^nM = (0)$.
+\end{proof}
+\subsubsection*{Non-example for Artin-Rees}
+THIS WHOLE THING WAS EXTREMELY CONFUSING SO DON'T SPEND TOO MUCH TIME TRYING TO DECIFER.
+Let $R = \z\supset I = (2)$, $M \conloneqq \z$-module with generators $x,y_1, y_2,\dots $, and relations
+\[
+2x=0, \quad x=2^ky_k \quad \forall k\geq 1
+\]
+and
+\[
+N \coloneqq \bigcap I^kM = \bigcap 2^k M
+\]
+\begin{claim}
+2N \neq N
+\end{claim}
+\begin{proof}
+Indeed, we claim that 
+\begin{equation}
+  N = \z x \subset M  
+\end{equation}
+which would imply that $2N = \z (2x) = \z 0 = \{0\}$, and $\z x \neq \{0\}$, i.e. $x\neq 0$ because the morphism
+\[
+\mapp{M}{\frac{\z [\frac{1}{2}]}{\z}}{x}{\frac{1}{2}}
+\]
+\[
+y_k \mapsto \frac{1}{2^{k+1}}
+\]
+To verify (?), consider the map 
+\[
+\mapping{\pi}{M}{M''\coloneqq \prod_{k\geq 1}\bigslant{\z}{2^k\z}}{x}{0}
+\]
+\[
+y_k \mapsto e_k = (0,0,\dots, 1,0,\dots
+\]
+This is well-defined. Moreover, $\ker(\pi) = \z x$ since any element $f\in M$ may be expressed as 
+\[
+f = c_0x + \sum_{k\geq 1} c_ky_k
+\]
+where $c_k =0 $ for all but finitely many $k$, and $0\leq c_k < 2^k$ for all $k\geq 1$ (else apply the relation $2^ky_k =x$). Then $\pi(f) = 0 \Leftrightarrow c_k = 0 \quad \forall k\geq 1 \Leftrightarrow f = c_0x$.\\
+If $f\in M $ satisfies $f\in N$, then $\pi(f) \in \bigcap_{n\geq 1}2^nM'' = \{0\}$
+\end{proof}
+\date{15.11.2018}
+\section*{Tor and Flatness}
+We need some review of homological algebra. Fix a ring $R$, and we fix the convension that a module  is $R$-module)
+\begin{definition}
+A \textbf{complex of modules} is a sequence of maps ($R$-module morphisms)
+\[
+\dots C_{i+1} \xrightarrow{\varphi_{i+1}} C_i \xrightarrow{\varphi_{i} } C_{i-1}\rightarrow \dots \rightarrow C_1\rightarrow C_0 \rightarrow C_{-1} \rightarrow C_{-2} \rightarrow \dots
+\]
+such that $\varphi_{i-1} \circ \varphi_i = 0$ for all $i$. Equivalently, $\Im{\varphi_i} \subset \ker (\varphi_{i-1})$. Sometimes we write 
+\[
+C \coloneqq \bigoplus_{i\in \z} C_i
+\]
+giving rise to a map
+\[
+\mapping{\varphi}{C}{C}{}{}
+\]
+given by $\bigoplus \varphi_i$.
+\end{definition}
+\begin{eg}
+$C_0 = M$ any module, $C_i = 0 $ for all $i\neq 0$.
+\end{eg}
+\begin{definition}
+Given a complex $(C,\varphi)$ as above, its \textbf{\boldsymbol{i}-th homology module} is 
+\[
+H^i(C) \coloneqq \bigslant{\ker(\varphi_i)}{\Im{\varphi_{i+1}} } \quad i\in \z
+\]
+Sometimes we write
+\[
+H(C) \coloneqq \bigoplus_{i\ in \z} H^i(C)
+\]
+\end{definition}
+\begin{remark}
+In the above example, $H^0= M$, and $H^i = 0 $ for all $i\neq 0$. 
+\end{remark}
+\begin{definition}
+A \textbf{morphism of complexes}
+\[
+\lambda: (C,\varphi) \rightarrow (D,\psi)
+\]
+is a sequence $\lambda = (\lambda_i)_{i\in \z}$ of maps 
+\[
+\lambda_i : C_i \rightarrow D_i
+\]
+that commute with $\varphi_i,\psi_i$, i.e.:
+COMMUTATIVE DIAGRAM SEE PICTURE
+\[
+\psi_i \lambda_i = \lambda_{i-1}\varphi_i
+\]
+
+\end{definition}
+Given such a morphism, we get an induced map on homology:
+\[
+\mapping{H^i(\lambda)}{H^i(C)}{H^i(D)}{}{}
+\]
+which is well-defined, because the commuativity implies that $\lambda_i(\Im(\varphi_{i+1})) \subset \Im(\psi_{i+1}))$, and $\lambda_i(\ker(\varphi_{i})) \subset \ker(\psi_i)$.\\
+Sometimes we write
+\[
+\lambda = \bigoplus \lambda_i : C\rightarrow D
+\]
+such that $\psi \lambda = \lambda \psi$.
+\begin{definition}
+Two morphisms $\lambda, \lambda': (C,\varphi)\rightarrow (D,\psi)$ are called \textbf{homotopic} if there exists maps
+\[
+w_i: C_i \rightarrow D_{i+1}, \quad i\in \z
+\]
+such that 
+\[
+\lambda_1 - \lambda'_1 = w_{i-1}\varphi_i+ \psi_{i+1} w_i
+\]
+where $w \coloneqq \bigoplus w_i$. SEE PICTURE DIAGRAM. Call $\lambda$ \textbf{null-homotopic} if $\lambda$ and $0$ are homotopic, i.e.
+\[
+\lambda = w \varphi + \psi w
+\]
+\end{definition}
+\begin{lemma}
+If $\lambda, \lambda'$ are homotopic, then $H(\lambda) = H(\lambda')$.
+
+\end{lemma}
+\begin{proof}
+We may assume $\lambda ' =0, \lambda = w\varphi+\psi w$. Let $x \in H(C) \subset \ker(varphi)/\Im(\varphi)$. Then $H(\lambda)x$ is the image in $\ker(\psi)/\Im(\psi)$ of $\lambda(\tilde{x})$ where $\tilde{x} \in C$ is any lift of $x$ (a representative of the coset ). But
+\[
+\lambda(\tilde{x}) = w(\varphi(\tilde{x})) + \psi(w(\tilde{x}))  
+\]
+since $w(\varphi(\tilde{x})) = 0$, and $\psi(w(\tilde{x}))  \in \Im(\psi)$ we have $H(\lambda)x =0$.
+\end{proof}
+\begin{lemma}
+
+
+Consider
+\[
+0 \rightarrow C'\xrightarrow{\mu} C \xrightarrow{\lambda} C'' \rightarrow 0
+\]
+a short exact sequence of complexes. Then there is a natural ``long exact sequence" of the following form:
+\[
+\dots \rightarrow H^{i+1}(C'')\xrightarrow{\delta_{i+1}} H^i(C') \xrightarrow{H^i(\mu)} H^i(C) \xrightarrow{H^i(\lambda)} H^i(C'') \rightarrow \dots
+\]
+Moreover, given an exact, and commutative diagram 
+\[
+0 \rightarrow C' \rightarrow 
+\]
+SEE PICTURE, we get a commutative LES:
+SEE PICTURE
+\end{lemma}
+DEFINITION OF $\delta_i$: SEE picture. \\
+Check: $\delta_i(t)$ is independent of the choice of everything $(\tilde{x}, \tilde{y})$, and satisfies the conclusion of the lemma. 
+\begin{proof}
+
+\end{proof}
+\begin{definition}
+Let $N$ be a module. A \textbf{resolution } of $N$ is an exact sequence of maps 
+\[
+\dots \rightarrow P_3 \rightarrow P_2 \rightarrow P_1 \rightarrow P_0 \rightarrow N \rightarrow 0
+\]
+where $P_i$'s are modules.
+\end{definition}
+Sometimes we abbreciate this by writing ``$P\rightarrow N \rightarrow N$". \\
+\begin{eg}
+$P_0 = N$, $P_i = 0$ for all $i\geq 1$. 
+\end{eg}
+
+To any resolution we can associate the complex of modules:
+\[
+\dots \rightarrow P_2 \rightarrow P_1\rightarrow P_0 \rightarrow 0 \rightarrow 0 \rightarrow \dots
+\]
+thus $P_i = 0 $ for all $i<0$. This complex has
+\[
+H^i(P)=
+\begin{cases}
+N & i=0\\
+0 & i\neq 0
+\end{cases}
+
+\]
+
+\begin{definition}
+A resolution is called \textbf{free} if each $P_i$ is a free module.
+\end{definition}
+\begin{lemma}
+Every module has a free resolution.
+\end{lemma}
+\begin{proof}
+Inductively define the $P_i$: Choose any free module $P_0$ that surjects onto $N$ (e.g., $P_0 = R^{(N)} \twoheadrightarrow N, e_n\mapsto n$), and then choose a free module $P_1$ that surjects onto $\ker(P_0 \twoheadrightarrow N)$, and then choose a free module $P_2$ that surjects onto $\ker(P_1 \twoheadrightarrow \ker (P_0\rightarrow N))$, $\dots$
+\end{proof}
+\begin{definition}
+A module $P$ is called \textbf{projective} if for all surjective maps of modules $\alpha: M \rightarrow N$ and all maps of modules $\beta:P\rightarrow  N$ there exists a map of modules $\tilde{\beta}; P \rightarrow M$ such that
+SEE COMMUTATIVE DIAGRAM PICTURE
+\end{definition}
+\begin{lemma}
+Given a module $P$, $P$ free $\Rightarrow P$ projective
+\end{lemma}
+\begin{proof}
+Say $P = R^{(I)} = \bigoplus_{i\in I}Re_i$. Then $\beta(e_i) = \alpha(\tilde{e})$ for some $\tilde{e_i} \in M$. Define $\tilde{\beta}$ by $\tilde{\beta}(e_i)  = \tilde{e_i}$.
+\end{proof}
+\begin{definition}
+A \textbf{projective resolution} $P\rightarrow N \rightarrow 0$ is a resolution where all the $P_i$'s are projective modules.
+\end{definition}
+\begin{corollary}
+Every module $N$ has a projective resolution ``$P\rightarrow N \rightarrow 0$".
+\end{corollary}
+\begin{lemma}
+Let ``$P \rightarrow M \rightarrow 0$" and ``$Q\rightarrow N \rightarrow 0$" be projective resolutions of some modules $M,N$. Therefore we get the induced associated complexes $P,Q$. Thus we have 
+\[
+\ho{P}{Q} \coloneqq \{\text{morphisms of complexes: }\} SEE PICTURE
+\]
+from which we can get 
+\[
+\mapp{\ho{P}{Q}}{\ho{M}{N}}{\lambda}{[x \mapsto \text{image of }\lambda_0(\tilde{x}),\text{ where }\tilde{x}\in P_0 \text{ lifts }x]} \text{what exactly is this $\tilde{x}$?}
+\]
+actually we have
+\[
+0 \rightarrow \{\text{null-homotopies}\} \rightarrow \ho{P}{Q} \rightarrow \ho{M}{N} \rightarrow 0
+\]
+\end{lemma}
+\begin{proof}
+
+\end{proof}
+\begin{lemma}
+Given a short exact sequence of  modules
+\[
+0 \rightarrow M' \rightarrow M \rightarrow M'' \rightarrow 0
+\]
+there exists an exact xommutative diagram of projective resoltions 
+PICTURE AGAIN
+\end{lemma}
+\begin{proof}
+Choose $P',P''$ arbitrarily. Set $P_i \coloneqq P_i' \oplus P_i''$. Need $\epsilon_i: P_i \rightarrow P_{i-1}$
+\end{proof}
+\begin{definition}
+Let $M$ be a module. Then for any module $N$, choose a projective resolution $P\rightarrow N \rightarrow 0$, this gives rise to a complex $P$, which gives rise to a complex $M \otimes P:$
+\[
+\dots \rightarrow M \otimes P_1 \rightarrow M \otimes P_0 \rightarrow 0
+\]
+we can then define
+\[
+\Tor_R^i(M,N) = \Tor^i(M,N) \coloneqq H^i(M \otimes P)
+\]
+
+\end{definition}
+Note: given any other projective resolution $Q\rightarrow N \rightarrow 0$, we get
+\[
+\ho{N}{N} \cong \bigslant{\ho{P}{Q}}{\text{homotopy}} \xrightarrow{\text{homology functor}} \ho{H(M\otimes P)}{H(M\otimes Q)} 
+\]
+\[
+\id \mapsto \text{ some isomorphism unique up to homotopy} \mapsto \text{some unique isomorphism}
+\]
+thus $\Tor^i(M,N)$ is defined upto unique isomorphisms.\\
+Moreover, given a SES $0\rightarrow N' \rightarrow N \rightarrow N'' \rightarrow 0$, we get an SES of free resolutions
+\[
+0 \rightarrow P' \rightarrow P\rightarrow P'' \rightarrow 0
+\]
+and likewise an SES of complexes $0 \rightarrow M\otimes P' \rightarrow M \otimes P \rightarrow M\otimes P'' \rightarrow 0$ we get an LES in homology:
+\[
+\dots \rightarrow \Tor^{i+1}(M,N'') \rightarrow \Tor^i(M,N')\rightarrow \Tor^i(M,N) \rightarrow \Tor^i(M,N'') \rightarrow \dots
+\]
+\begin{remark}
+\[
+\Tor^0(M,N) = M\otimes N
+\]
+since 
+\[
+\Tor^0(M,N) = \bigslant{\ker(M \otimes P_0 \rightarrow 0)}{\Im(M\otimes P_1 \rightarrow M \otimes P_0)}
+\]
+Recall that tensor products are right exact.
+\end{remark}
+Thus the long exact sequence that we established starts with
+
+\begin{fact}
+if $\Tor^1(M,N) = 0$ for all $N$ then $M$ is flat.
+\end{fact}
+\begin{fact}
+If $\Tor^1(M,N')$ and $\Tor^1(M,N'')$ are $0$, then so is $\Tor^1(M,N)$
+\end{fact}
+\date{20.11.2018}
+\section*{Completions}
+\subsection*{Motivation}
+Consider the zero locus $Z\subset \r$ of the polynomial $f(x,y) = y^2-x-1 \in \r[x,y]$. Consider the function defined by this polynomail, then
+\[
+\pdv{f}{y}(0,-1) \neq 0
+\]
+thus the implicit function theorem implies that there exists 
+\[
+g:(-\epsilon,\epsilon) \rightarrow (-1-\delta , -1+\delta)
+\]
+such a $g$ has to verify $g(x) = \sqrt{1+x}$, but this is not a polynomial. But we can write, by analysis
+\[
+g(x) = 1-\frac{x}{2}+\frac{x^2}{8} + \dots \in \r [[x]], \text{ the ``completion" of }\r[x]\text{ w.r.t. the maximal ideal }(x)
+\]
+
+\subsection*{Completion of an Abelian Topological Group}
+\subsubsection*{Topological Construction}
+\begin{definition}
+Let $G$ be an abelian topological group, i.e. $G$ is a group endowed with a topology, for with group operations are continuous (the multiplication, and inverse mappings are continuous). A \textbf{Cauchy Sequence} in $G$, is a sequence $(x_n)_n \in G^\n$ such that for any neighborhood of the identity $U$, there exists $i\in \n$ such that for all $j,k \geq i$, $x_j - x_k \in U$.
+\end{definition}
+Two Cauchy sequences $(x_n)_n, (y_n)_n $ in $G$ are equivalent if $(x_n - y_n)$ converges to $0$ (in the topology). This is an equivalence relation. Then we can define
+\[
+\hat{G} = \text{set of equivalence classes of Cauchy sequences in $G$}
+\]
+$\hat{G}$ has a canonical structure of an abelian group 
+\[
+\mapping{\phi}{G}{\hat{G}}{x}{[(x,x,\dots)]}
+\]
+is a group morphism. \\
+
+Now assume $G$ is a filtered abelian gorup, i.e.
+\[
+G = G_0 \supset G_1 \supset \dots \supset G_n \supset \dots, \quad G_i \text{ are subgroups }
+\]
+there exists unique topology on $G$ making it into a topological group, and such that $\{G_n\}_n$ is a fundamental system of neighborhoods of the neutral element. We can consider $\hat{G}$. Consider $(x_k)$ a Cauchy sequence, fix $n\in \n$. Consider the projection $\pi_n : G\rightarrow G/G_n$. Then there exists $i(n)$ such that for all $j,k \geq i(n)$, such that $x_j-x_k \in G_n$. The sequence $(\pi_n(x_j))_{j\geq i(n)}$ is constant in $G/G_n$ equal to say $\xi_n \in G/G_n$. Now we get
+\[
+(\xi_n)_n \in \prod_{n\geq i} \bigslant{G}{G_n}
+\]
+there exists well-defined map (group homomorphism ) $\hat{G} \rightarrow \prod_n G/G_n$. 
+
+\subsection*{Inverse Limits of Groups}
+\begin{definition}
+$A_n$, a collection of groups, together with a collection of maps $\theta_{n+1}: A_{n+1}\rightarrow A_n$ is called an \textbf{inverse system of groups}
+\end{definition}
+We want to define...
+\begin{claim}
+$f: \hat{G} \rightarrow inverselimit G/G_n$ is an isomorphism
+\end{claim}
+
+\begin{lemma}
+
+\end{lemma}
+\date{22.11.2018}
+\section*{Properties of Completion}
+\subsubsection*{Flatness}
+\begin{theorem}
+Let $R$ be Noetherian ring, $m\subset R$ an ideal, and $\hat{R} = \hat{R}_m$. 
+\begin{enumerate}
+    \item If $M$ is a finitely generated module over $R$, then the canonical map
+    \[
+    \hat{R} \otimes_R M \rightarrow \lim \bigslant{M}{m^jM} \coloneqq \hat{M}
+    \]
+    is an isomorphism of $R$-modules. 
+    \item $\hat{R}$ is a flat $R$-algebra $(\phi: R \rightarrow \hat{R})$. 
+\end{enumerate}
+\end{theorem}
+\begin{theorem}
+Same assumptions as above. Then 
+\begin{enumerate}
+    \item $\hat{m} = m\hat{R}$
+    \item $\hat{m_n} = \hat{m}^n$, in particular, $\hat{R} $ is $\hat{m}$-adically complete.
+    \item $\hat{R}$ is Noetherian.
+\end{enumerate}
+\end{theorem}
+\begin{theorem}[Hensel's Lemma]
+Let $R$ be a ring, $m$-adically complete ($m\subset R$ ideal). $f(n)\in R[n]$, $a\in R$ approximate root of $f$, i.e. 
+\[
+f(a) \equiv  0 \mod f'(a)^2m
+\]
+Then there exists a root of $f$ ``near" $a$, i.e. there exists $b\in R$ such that $f(b)  = 0$ and $b \equiv a \mod f'(a)m$.
+\end{theorem}
+\begin{corollary}[``Implicit function Theorem"]
+$k$ a field, $f(t , x) \in k[t, x]$, $a\in k$ is a simple root of $f(0,x) \in k[x]$ ($\pdv{f}{x} \neq 0$). Then there exists a unique formal power series $x(t) \in k[[t]] $ such that $x(0) = a $ and $f(t,x(t)) \equiv 0, f(t,x(t)) \in k[[t]]$. 
+\end{corollary}
+\date{27.11.2018}
+\section*{Applications of Tor and Flatness}
+For a module, free $\Rightarrow$ projective $\xRightarrow{\star}$ flat. We know from homework that projective $\iff$ it is a direct summand of a free module. Note that a module $P$ is projective $\iff$ there exists modules $P', F$ with $F$ free such that $F \cong P \oplus P'$.
+\subsubsection*{Proof of $\xRightarrow{\star}$}
+\begin{proof}
+We know that free $\Rightarrow$ flat. Suppoe $P$ is projective, but not flat. Thus there exists an injective map $N' \hookrightarrow N$ such that $P \otimes N' \rightarrow P \otimes N$ is not injective. Choose $P', F$ as above. Then consider the mapping
+\[
+F \otimes N' \rightarrow F \otimes N
+\]
+equivalent to
+\[
+(P \otimes N') \oplus (P' \otimes N') \rightarrow (P \otimes N)\oplus(P' \otimes N)
+\]
+which is not injective. But $F$ is free, so $F$ is flat, which is a contradiction.
+\end{proof}
+Recall: for all modules $M,N$, we defined $\Tor_i(M,N) = \Tor_i^R(M,N)$ as follows: choose a projective resolution $\dots \rightarrow P_2\rightarrow P_1 \rightarrow P_0 \rightarrow N$, formed the complex $\dots \rightarrow M \otimes P_2 \rightarrow M \otimes P \xrightarrow{d_1} M \otimes P_0 \xrightarrow{d_0} 0$, and defined $\Tor_i (M,N)$ to be its ith homology module, i.e.
+\[
+\Tor_i (M,N) \coloneqq \bigslant{\ker (d_i)}{\Im{(d_{i+1})}}
+\]
+If 
+\[
+0 \rightarrow N' \rightarrow N \rightarrow N'' \rightarrow 0
+\]
+is a SES, then we can form the LES:
+
+\begin{align*}
+    &\dots &\rightarrow &\Tor_1(M,N') &\rightarrow &\Tor_1(M,N) &\rightarrow &\Tor_1 (M, N'')\\
+    &\dots &\rightarrow &\Tor_1(M,N') &\rightarrow &\Tor_1(M,N) &\rightarrow &\Tor_1 (M, N'')\\
+    &\dots &\rightarrow 0
+\end{align*}
+SEE PIC\\
+From HW, $\Tor_i(M,N) = 0$ for all $i\geq 1$ when either one of these are true:
+\begin{enumerate}
+    \item $M$ flat
+    \item $N$ projective
+\end{enumerate}
+\begin{fact}
+\[
+\Tor_i(M,N) \cong \Tor_i(N,M)
+\]
+\end{fact}
+\begin{proof}
+In Eis.
+\end{proof}
+\begin{prop}
+Morphisms $M_1\rightarrow M_2$ induce morphisms $\Tor_i(M,N) \rightarrow \Tor_i(M_i,N)$; morphisms $N_1\rightarrow N_2$ induce morphisms $\Tor_i(M,N_1)\rightarrow \Tor_i(M,N_2)$
+\end{prop}
+\begin{prop}
+$R$ Noetherian, M,N f.g. module implies $\Tor_i(M,N)$ f.g. for all $i$
+\end{prop}
+\begin{prop}
+Compatibility with localization. More generally with ``flat base extension": given an $R$-algebra $S$ that is flat over $R$, then
+\[
+\Tor_i^S(M \otimes_R S, N \otimes_R S) \cong \Tor_i^R(M,N) \otimes_R S
+\]
+i.e. 
+\end{prop}
+From HW: 
+
+\begin{theorem}
+$M$ flat $\iff$
+\begin{enumerate}
+    \item $\Tor_1(M,R/I) = 0$ for all ideals $I$
+    \item $\iff$ 
+    \[
+    \mapp{I \otimes M}{IM}{x\otimes m}{xm}
+    \]
+    is an isomorphism for all $i$.
+\end{enumerate}
+\end{theorem}
+\end{document} 
+   
